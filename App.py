@@ -60,7 +60,7 @@ def get_recommendations(content, ranking, url, engine='text-davinci-004'):
             max_tokens=500  # Increased max_tokens for more detailed recommendations
         )
         return response.choices[0].text.strip()
-    except openai.error.OpenAIError as e:
+    except Exception as e:  # Catching a general exception
         return f"An error occurred: {str(e)}"
 
 # Streamlit UI
@@ -86,4 +86,3 @@ if st.button('Analyze'):
         st.write(recommendations)
     else:
         st.warning('Please enter both a URL and a keyword.')
-
