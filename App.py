@@ -26,24 +26,42 @@ def get_google_search_results(query, site_url):
     return None
 
 def scrape_content(url):
+    # Ensure the URL starts with http:// or https://
+    if not url.startswith(('http://', 'https://')):
+        url = 'http://' + url
+
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
     content = soup.find('main').text
     return content
 
-def get_recommendations(content, ranking, engine='text-davinci-004'):
-    prompt = f"The website content is:\n{content}\n\n"
-    if ranking is not None and ranking <= 50:
-        prompt += f"The site is ranked {ranking} for the given keyword. Provide both on-page and off-page SEO recommendations to improve its ranking."
-    else:
-        prompt += "The site is not in the top 50. Provide on-page SEO recommendations to improve its ranking."
-    
-    response = openai.Completion.create(
-      engine=engine,
-      prompt=prompt,
-      max_tokens=250
+def get_recommendations(content, ranking, url, engine='text-davinci-004'):
+    content_preview = (content[:500] + '...') if len(content) > 500 else content
+    prompt = (
+        f"Website URL: {url}\n"
+        f"Content Preview (first 500 characters): {content_preview}\n\n"
+        "Provide a detailed on-page SEO analysis with specific tasks for improvement. Analyze aspects such as:\n"
+        "- Use of keywords in titles (H1, H2 tags) and meta descriptions.\n"
+        "- Content relevance and quality.\n"
+        "- Presence of internal and external links.\n"
+        "- URL structure and user-friendliness.\n"
+        "- Mobile-friendliness and loading speed.\n"
     )
-    return response.choices[0].text.strip()
+
+    if ranking is not None and ranking <= 50:
+        prompt += f"\nThe site is currently ranked {ranking} for the given keyword. Include additional strategic advice on how to further improve the ranking, considering both on-page and off-page SEO factors."
+    else:
+        prompt += "\nThe site is not in the top 50. Focus on crucial improvements that can significantly impact the site's SEO performance."
+
+    try:
+        response = openai.Completion.create(
+            engine=engine,
+            prompt=prompt,
+            max_tokens=500  # Increased max_tokens for more detailed recommendations
+        )
+        return response.choices[0].text.strip()
+    except openai.error.OpenAIError as e:
+        return f"An error occurred: {str(e)}"
 
 # Streamlit UI
 st.title('SEO Analysis Tool')
@@ -55,14 +73,17 @@ if st.button('Analyze'):
     if url and keyword:
         ranking = get_google_search_results(keyword, url)
         content = scrape_content(url)
-        recommendations = get_recommendations(content, ranking, engine='text-davinci-004')
+        recommendations = get_recommendations(content, ranking, url, engine='text-davinci-004')
         
         if ranking is not None and ranking <= 50:
             st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
         elif ranking is None:
             st.write('Your site was not found in the top 50 results.')
         
-        st.write('Content Scraped:', content)
-        st.write('SEO Recommendations:', recommendations)
+        st.subheader('Content Scraped:')
+        st.write(content)  # Display a portion of the scraped content
+        st.subheader('SEO Recommendations:')
+        st.write(recommendations)
     else:
         st.warning('Please enter both a URL and a keyword.')
+
