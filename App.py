@@ -8,21 +8,25 @@ openai.api_key = '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'
 google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
 google_cse_id = '34200d9d3c6084a1f'
 
-def get_google_search_results(query, site_url):
+def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
         'q': query,
         'cx': google_cse_id,
-        'key': google_api_key
+        'key': google_api_key,
+        'num': 10,  # Number of results per page
+        'gl': location  # Location parameter
     }
-    response = requests.get(url, params=params)
-    results = response.json()
-    
-    for i, item in enumerate(results.get('items', [])):
-        if i >= 50:  # Cap the ranking at 50
-            break
-        if site_url in item.get('link'):
-            return i + 1
+    ranking = None
+    for start_index in range(1, 51, 10):  # Look through the first 50 results
+        params['start'] = start_index
+        response = requests.get(url, params=params)
+        results = response.json()
+
+        for i, item in enumerate(results.get('items', [])):
+            if site_url in item.get('link'):
+                ranking = i + 1 + start_index - 1  # Adjusting ranking based on the page
+                return ranking
     return None
 
 def scrape_content(url):
@@ -55,11 +59,11 @@ def get_recommendations(content, ranking, url, engine='text-davinci-004'):
 
     try:
         response = openai.Completion.create(
-            engine=engine,
+            model=engine,
             prompt=prompt,
             max_tokens=500  # Increased max_tokens for more detailed recommendations
         )
-        return response.choices[0].text.strip()
+        return response['choices'][0]['text'].strip()
     except Exception as e:  # Catching a general exception
         return f"An error occurred: {str(e)}"
 
@@ -68,10 +72,11 @@ st.title('SEO Analysis Tool')
 
 url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
+location = st.text_input('Enter your location (e.g., "New York, USA") here:')
 
 if st.button('Analyze'):
-    if url and keyword:
-        ranking = get_google_search_results(keyword, url)
+    if url and keyword and location:
+        ranking = get_google_search_results(keyword, url, location)
         content = scrape_content(url)
         recommendations = get_recommendations(content, ranking, url, engine='text-davinci-004')
         
@@ -80,9 +85,12 @@ if st.button('Analyze'):
         elif ranking is None:
             st.write('Your site was not found in the top 50 results.')
         
+        # Display a portion of the scraped content (optional, depending on your preference)
         st.subheader('Content Scraped:')
-        st.write(content)  # Display a portion of the scraped content
+        st.write(content)  # You can choose to comment this out if you don't want to display the scraped content
+        
+        # Display the SEO recommendations
         st.subheader('SEO Recommendations:')
         st.write(recommendations)
     else:
-        st.warning('Please enter both a URL and a keyword.')
+        st.warning('Please enter a URL, a keyword, and a location.')
