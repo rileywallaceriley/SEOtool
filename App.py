@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 import openai
 
 # Set your API keys here (preferably as environment variables)
-openai.api_key = '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'
-google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
-google_cse_id = '34200d9d3c6084a1f'
+openai.api_key = 'your_openai_api_key'
+google_api_key = 'your_google_api_key'
+google_cse_id = 'your_custom_search_engine_id'
 
 def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
@@ -58,15 +58,13 @@ def get_recommendations(content, ranking, url, engine='text-davinci-004'):
         prompt += "\nThe site is not in the top 50. Focus on crucial improvements that can significantly impact the site's SEO performance."
 
     try:
-        response = openai.Completion.create(
+        response = openai.ChatCompletion.create(
             model=engine,
-            prompt=prompt,
-            max_tokens=500,
-            n=1,
-            stop=None,
-            temperature=0.7
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
         )
-        return response['choices'][0]['text'].strip()
+        return response['choices'][0]['message']['content']
     except Exception as e:  # Catching a general exception
         return f"An error occurred: {str(e)}"
 
@@ -87,10 +85,6 @@ if st.button('Analyze'):
             st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
         elif ranking is None:
             st.write('Your site was not found in the top 50 results.')
-        
-        # Display a portion of the scraped content (optional, depending on your preference)
-        # st.subheader('Content Scraped:')
-        # st.write(content)  # You can uncomment these lines if you want to display the scraped content
         
         # Display the SEO recommendations
         st.subheader('SEO Recommendations:')
