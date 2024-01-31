@@ -40,6 +40,7 @@ def scrape_content(url):
     return content
 
 def get_recommendations(content, ranking, url, engine='text-davinci-004'):
+    
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     prompt = (
         f"Website URL: {url}\n"
@@ -57,13 +58,16 @@ def get_recommendations(content, ranking, url, engine='text-davinci-004'):
     else:
         prompt += "\nThe site is not in the top 50. Focus on crucial improvements that can significantly impact the site's SEO performance."
 
-    try:
+     try:
         response = openai.Completion.create(
             model=engine,
             prompt=prompt,
-            max_tokens=500  # Increased max_tokens for more detailed recommendations
+            max_tokens=500,
+            n=1,
+            stop=None,
+            temperature=0.7
         )
-        return response['choices'][0]['text'].strip()
+        return response.choices[0].text.strip()
     except Exception as e:  # Catching a general exception
         return f"An error occurred: {str(e)}"
 
