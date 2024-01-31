@@ -1,0 +1,68 @@
+import streamlit as st
+import requests
+from bs4 import BeautifulSoup
+import openai
+
+# Set your API keys here
+openai.api_key = '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'
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
+
+def get_google_search_results(query, site_url):
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        'q': query,
+        'cx': google_cse_id,
+        'key': google_api_key
+    }
+    response = requests.get(url, params=params)
+    results = response.json()
+    
+    for i, item in enumerate(results.get('items', [])):
+        if i >= 50:  # Cap the ranking at 50
+            break
+        if site_url in item.get('link'):
+            return i + 1
+    return None
+
+def scrape_content(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    content = soup.find('main').text
+    return content
+
+def get_recommendations(content, ranking, engine='text-davinci-004'):
+    prompt = f"The website content is:\n{content}\n\n"
+    if ranking is not None and ranking <= 50:
+        prompt += f"The site is ranked {ranking} for the given keyword. Provide both on-page and off-page SEO recommendations to improve its ranking."
+    else:
+        prompt += "The site is not in the top 50. Provide on-page SEO recommendations to improve its ranking."
+    
+    response = openai.Completion.create(
+      engine=engine,
+      prompt=prompt,
+      max_tokens=250
+    )
+    return response.choices[0].text.strip()
+
+# Streamlit UI
+st.title('SEO Analysis Tool')
+
+url = st.text_input('Enter your URL here:')
+keyword = st.text_input('Enter your target keyword here:')
+
+if st.button('Analyze'):
+    if url and keyword:
+        ranking = get_google_search_results(keyword, url)
+        content = scrape_content(url)
+        recommendations = get_recommendations(content, ranking, engine='text-davinci-004')
+        
+        if ranking is not None and ranking <= 50:
+            st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
+        elif ranking is None:
+            st.write('Your site was not found in the top 50 results.')
+        
+        st.write('Content Scraped:', content)
+        st.write('SEO Recommendations:', recommendations)
+    else:
+        st.warning('Please enter both a URL and a keyword.')
