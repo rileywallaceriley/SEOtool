@@ -43,7 +43,7 @@ keywords = st.text_input('Keywords (separated by comma):')
 links_to_embed = st.text_input('Links to Embed (separated by comma):')
 
 if st.button('Enhance SEO'):
-    if current_copy and keywords and links_to_embed and anchor_text:
+    if current_copy and keywords and links_to_embed:
         with st.spinner('Enhancing SEO...'):
             seo_enhanced_copy = get_seo_enhanced_copy(current_copy, keywords, links_to_embed, anchor_text)
         
