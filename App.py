@@ -43,28 +43,36 @@ def scrape_content(url):
 
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
-    
-    # Scrape title
-    title = soup.find('title').text if soup.find('title') else 'No title found'
-    
-    # Scrape meta description
-    description = soup.find('meta', attrs={'name': 'description'}) or soup.find('meta', attrs={'property': 'og:description'})
-    description = description['content'] if description else 'No description found'
-    
-    # Scrape meta keywords
-    keywords = soup.find('meta', attrs={'name': 'keywords'})
-    keywords = keywords['content'] if keywords else 'No keywords found'
-    
-    # Scrape page content
     content = soup.find('main').text if soup.find('main') else 'Main content not found'
+    return content
 
-    return title, description, keywords, content
+def get_load_speed(url):
+    pagespeed_url = f'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={url}&key={google_api_key}'
+    response = requests.get(pagespeed_url)
+    result = response.json()
+    
+    # Parse the result as needed, for example:
+    speed_score = result.get('lighthouseResult', {}).get('categories', {}).get('performance', {}).get('score')
+    if speed_score:
+        speed_score = speed_score * 100  # Convert to percentage
+    else:
+        speed_score = 'Load speed score not available'
+    return speed_score
+
 def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
-    content_preview = (content[:1000] + '...') if len(content) > 500 else content
-    prompt = f"Analyze the following content from a website and provide specific SEO recommendations to boost rankings for the keyword. The website is currently ranked {ranking} for its main keyword.\n\nContent Preview: {content_preview}"
+    content_preview = (content[:500] + '...') if len(content) > 500 else content
+    prompt = (
+        f"Website URL: {url}\n"
+        f"Content Preview (first 500 characters): {content_preview}\n"
+        f"Current SEO Ranking: {ranking}\n\n"
+        "Provide specific and actionable SEO recommendations based on the content preview and current SEO ranking. "
+        "Avoid general concepts and provide direct recommendations on how to update the main copy, meta tags, and any other on-page elements to improve SEO performance. "
+        "Also, include page speed recommendations if appropriate.\n\n"
+        "Note: The main keyword should be strategically included in the content, but avoid recommendations that merely state to include the main keyword."
+    )
     
     messages = [
-        {"role": "system", "content": "You are an AI trained in SEO and content analysis."},
+        {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
         {"role": "user", "content": prompt}
     ]
     
@@ -73,8 +81,7 @@ def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
             model=engine,
             messages=messages
         )
-        # Accessing the completion message correctly
-        return completion.choices[0].message.content  # Accessing attributes correctly
+        return completion['choices'][0]['message']['content']
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
@@ -89,6 +96,7 @@ if st.button('Analyze'):
     if url and keyword and location:
         ranking = get_google_search_results(keyword, url, location)
         content = scrape_content(url)
+        load_speed_score = get_load_speed(url)
         recommendations = get_recommendations(content, ranking, url)
         
         if ranking is not None and ranking <= 50:
@@ -98,6 +106,4 @@ if st.button('Analyze'):
         
         # Display the SEO recommendations
         st.subheader('SEO Recommendations:')
-        st.write(recommendations)
-    else:
-        st.warning('Please enter a URL, a keyword, and a location.')
+        st.write(recommend
