@@ -8,6 +8,32 @@ st.image(logo_url, width=200)  # Adjust the width as needed
 
 st.title('RepuSEO Writing Assistant')
 
+# Custom HTML and CSS for the header
+header_html = """
+<div style="display:flex;justify-content:space-between;align-items:center;">
+    <!-- Logo on the Left -->
+    <img src="https://i.ibb.co/JHrXTjz/REPU-03.png" style="height:100px;">
+    
+    <!-- Nav Menu on the Right -->
+    <nav>
+        <ul style="display:flex;list-style-type:none;margin:0;padding:0;">
+            <li style="padding:0 20px;"><a href="#item1">Item 1</a></li>
+            <li style="padding:0 20px;"><a href="#item2">Item 2</a></li>
+            <li style="padding:0 20px;"><a href="#item3">Item 3</a></li>
+            <li style="padding:0 20px;"><a href="#item4">Item 4</a></li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Include some inline JavaScript for the hamburger menu behavior (responsive) -->
+<script>
+    // Your JavaScript for the hamburger menu here
+</script>
+"""
+
+# Use st.markdown to render the custom HTML
+st.markdown(header_html, unsafe_allow_html=True)
+
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
