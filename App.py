@@ -4,6 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 from openai import OpenAI
 
+# Display the logo at the top of the app
+logo_url = 'https://i.ibb.co/JHrXTjz/REPU-03.png'
+st.image(logo_url, width=200)  # Adjust the width as needed
+
+st.title('RepuSEO-Helper')
+
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
