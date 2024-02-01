@@ -2,12 +2,6 @@ import os
 import streamlit as st
 from openai import OpenAI
 
-# Display the logo at the top of the app
-logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
-st.image(logo_url, width=200)  # Adjust the width as needed
-
-st.title('RepuSEO Writing Assistant')
-
 # Define your navigation links
 nav_links = {
     "Home": "http://link-to-home.com",
@@ -16,10 +10,25 @@ nav_links = {
     "Contact": "http://link-to-contact.com",
 }
 
-# Create buttons for navigation
-for label, url in nav_links.items():
-    # Use markdown to create a link that looks like a button
-    st.markdown(f'<a href="{url}" target="_blank"><button style="margin: 10px;">{label}</button></a>', unsafe_allow_html=True)
+# Create a container for the header (logo + navigation bar)
+header_container = st.container()
+
+# Determine the number of columns: one for the logo + one for each navigation link
+num_columns = 1 + len(nav_links)
+cols = header_container.columns([1, *([3] * len(nav_links))])
+
+# Display the logo in the first column
+cols[0].image('https://i.ibb.co/JHrXTjz/REPU-03.png', width=200)
+
+# Create buttons for navigation in the remaining columns
+for col, (label, url) in zip(cols[1:], nav_links.items()):
+    # Use the button widget in Streamlit for consistent styling
+    if col.button(label):
+        # Here you can define what happens when a button is clicked
+        # For example, you might navigate to different pages of the app
+        pass
+
+st.title('RepuSEO-Helper')
 
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
