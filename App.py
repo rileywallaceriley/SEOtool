@@ -76,7 +76,7 @@ def get_load_speed(url):
         speed_score = 'Load speed score not available'
     return speed_score
 
-def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo', purpose='general'):
+def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     
     # Modify the prompt based on the purpose
