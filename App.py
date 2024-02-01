@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 import openai
 
 # Set your API keys here (preferably as environment variables)
-openai.api_key = 'your_openai_api_key'
-google_api_key = 'your_google_api_key'
-google_cse_id = 'your_custom_search_engine_id'
+openai.api_key = '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'
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
 
 def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
