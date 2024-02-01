@@ -104,5 +104,11 @@ if st.button('Analyze'):
         elif ranking is None:
             st.write('Your site was not found in the top 50 results.')
         
-        # Display the SEO recommendations
-        st.sub
+        # Display the SEO recommendations and load speed
+        st.subheader('SEO Recommendations:')
+        st.write(recommendations)
+        
+        st.subheader('Page Load Speed Score:')
+        st.write(f'Load Speed Score (out of 100): {load_speed_score}')
+    else:
+        st.warning('Please enter a URL, a keyword, and a location.')
