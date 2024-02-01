@@ -18,7 +18,7 @@ num_columns = 1 + len(nav_links)
 cols = header_container.columns([1, *([3] * len(nav_links))])
 
 # Display the logo in the first column
-cols[0].image('https://i.ibb.co/JHrXTjz/REPU-03.png', width=200)
+cols[0].image('https://i.ibb.co/VvYtGFg/REPU-11.png', width=200)
 
 # Create buttons for navigation in the remaining columns
 for col, (label, url) in zip(cols[1:], nav_links.items()):
