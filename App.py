@@ -18,8 +18,8 @@ if not openai_api_key:
 # Create an OpenAI client instance
 client = OpenAI(api_key=openai_api_key)
 
-google_api_key = 'your_google_api_key'  # Replace with your actual Google API key
-google_cse_id = 'your_custom_search_engine_id'  # Replace with your actual Custom Search Engine ID
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
 
 # ... [rest of your existing code for functions get_google_search_results, scrape_content, get_load_speed] ...
 
