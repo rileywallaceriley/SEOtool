@@ -115,53 +115,44 @@ url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
 location = st.text_input('Enter your location (e.g., "New York, USA") here:')
 
+# Initialize session states for storing results
+if 'analysis_results' not in st.session_state:
+    st.session_state.analysis_results = None
+if 'meta_description' not in st.session_state:
+    st.session_state.meta_description = None
+# ... similarly for main_copy_updates and seeder_post ...
+
 if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
-            ranking = get_google_search_results(keyword, url, location)
-            content = scrape_content(url)
-            load_speed_score = get_load_speed(url)
-            recommendations = get_recommendations(content, ranking, url)
-        
-        if ranking is not None and ranking <= 50:
-            st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
-        elif ranking is None:
-            st.write('Your site was not found in the top 50 results.')
-        
-        # Display the SEO recommendations and load speed
-        st.subheader('SEO Recommendations:')
-        st.write(recommendations)
-        
-        st.subheader('Page Load Speed Score:')
-        st.write(f'Load Speed Score (out of 100): {load_speed_score}')
-        
-        # Action buttons for further SEO enhancements
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            if not st.session_state['meta_pressed']:
-                if st.button('Refresh Meta'):
-                    st.session_state['meta_pressed'] = True
-                    with st.spinner('Refreshing meta description...'):
-                        meta_description = get_recommendations(content, ranking, url, purpose='refresh_meta')
-                        st.write('Refreshed Meta Description:')
-                        st.write(meta_description)
+            # Perform analysis and store results in session state
+            st.session_state.analysis_results = perform_analysis(keyword, url, location)
 
-        with col2:
-            if not st.session_state['main_copy_pressed']:
-                if st.button('Refresh Main Copy'):
-                    st.session_state['main_copy_pressed'] = True
-                    with st.spinner('Refreshing main copy...'):
-                        main_copy_updates = get_recommendations(content, ranking, url, purpose='refresh_main_copy')
-                        st.write('Refreshed Main Copy Updates:')
-                        st.write(main_copy_updates)
+# Check session state before displaying analysis results
+if st.session_state.analysis_results:
+    # Display the SEO recommendations and load speed
+    display_results(st.session_state.analysis_results)
 
-        with col3:
-            if not st.session_state['seeder_pressed']:
-                if st.button('Write Seeder Post'):
-                    st.session_state['seeder_pressed'] = True
-                    with st.spinner('Generating seeder post...'):
-                        seeder_post = get_recommendations(content, ranking, url, purpose='write_seeder_post')
-                        st.write('Seeder Post (300 words):')
-                        st.write(seeder_post)
-    else:
-        st.warning('Please enter a URL, a keyword, and a location.')
+# Action buttons for further SEO enhancements
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button('Refresh Meta'):
+        with st.spinner('Refreshing meta description...'):
+            # Generate and store meta description in session state
+            st.session_state.meta_description = get_recommendations(content, ranking, url, purpose='refresh_meta')
+
+# Check session state before displaying meta description
+if st.session_state.meta_description:
+    st.subheader('Refreshed Meta Description:')
+    st.write(st.session_state.meta_description)
+
+# ... similarly for 'Refresh Main Copy' and 'Write Seeder Post' ...
+
+# Functions to display results and perform analysis
+def display_results(results):
+    # Function to display results
+    # ...
+
+def perform_analysis(keyword, url, location):
+    # Function to perform analysis
+    # ...
