@@ -13,17 +13,20 @@ nav_links = {
 # Create a container for the header (logo + navigation bar)
 header_container = st.container()
 
-# Determine the number of columns: one for the logo + one for each navigation link
-num_columns = 1 + len(nav_links)
-cols = header_container.columns([1, *([3] * len(nav_links))])
+# Define the layout of the columns: [Logo, Spacer, Nav1, Nav2, Nav3, Nav4]
+# The spacer column will take up the remaining space, pushing the nav buttons to the right
+cols = header_container.columns([2, 6, 1, 1, 1, 1])
 
 # Display the logo in the first column
-cols[0].image('https://i.ibb.co/VvYtGFg/REPU-11.png', width=200)
+cols[0].image('https://i.ibb.co/JHrXTjz/REPU-03.png', width=200)
+
+# Use the second column (spacer) to push the nav buttons to the right
+# No content is needed in the spacer column
 
 # Create buttons for navigation in the remaining columns
-for col, (label, url) in zip(cols[1:], nav_links.items()):
+for col, (label, url) in zip(cols[2:], nav_links.items()):
     # Use the button widget in Streamlit for consistent styling
-    if col.button(label):
+    if col.button(label, key=label):
         # Here you can define what happens when a button is clicked
         # For example, you might navigate to different pages of the app
         pass
