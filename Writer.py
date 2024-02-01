@@ -22,7 +22,7 @@ def get_seo_enhanced_copy(current_copy, keywords, links_to_embed, anchor_text):
         f"Keywords: {keywords}\n"
         f"Links to Embed: {links_to_embed}\n"
         f"Desired Anchor Text: {anchor_text}\n\n"
-        "Edit the copy to improve its SEO score. Start the results by providing a current SEO score, then provide a final SEO score after the copy is edited. Also, provide a brief explainer of the changes for learning purposes."
+        "Edit the copy to improve its SEO score. Start the results by providing a current SEO score, then provide a final SEO score after the copy is edited. Also, provide a brief explainer of the changes for learning purposes. Your output should be in html format; no need to add header tags, page, and <p>and all that...only add all teh relevant header tags and href tags. you shoudl be able to knwo teh appropriate place to insert the given links. Also include all teh necessary meta data for SEO purposes"
     )
     
     messages = [
