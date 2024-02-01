@@ -43,12 +43,25 @@ def scrape_content(url):
 
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
-    content = soup.find('main').text
-    return content
+    
+    # Scrape title
+    title = soup.find('title').text if soup.find('title') else 'No title found'
+    
+    # Scrape meta description
+    description = soup.find('meta', attrs={'name': 'description'}) or soup.find('meta', attrs={'property': 'og:description'})
+    description = description['content'] if description else 'No description found'
+    
+    # Scrape meta keywords
+    keywords = soup.find('meta', attrs={'name': 'keywords'})
+    keywords = keywords['content'] if keywords else 'No keywords found'
+    
+    # Scrape page content
+    content = soup.find('main').text if soup.find('main') else 'Main content not found'
 
+    return title, description, keywords, content
 def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
-    content_preview = (content[:500] + '...') if len(content) > 500 else content
-    prompt = f"Analyze the following content from a website and provide SEO recommendations. The website is currently ranked {ranking} for its main keyword.\n\nContent Preview: {content_preview}"
+    content_preview = (content[:1000] + '...') if len(content) > 500 else content
+    prompt = f"Analyze the following content from a website and provide specific SEO recommendations to boost rankings for the keyword. The website is currently ranked {ranking} for its main keyword.\n\nContent Preview: {content_preview}"
     
     messages = [
         {"role": "system", "content": "You are an AI trained in SEO and content analysis."},
