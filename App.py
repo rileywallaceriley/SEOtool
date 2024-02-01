@@ -105,5 +105,4 @@ if st.button('Analyze'):
             st.write('Your site was not found in the top 50 results.')
         
         # Display the SEO recommendations
-        st.subheader('SEO Recommendations:')
-        st.write(recommend
+        st.sub
