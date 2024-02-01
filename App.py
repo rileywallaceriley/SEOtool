@@ -5,14 +5,13 @@ from bs4 import BeautifulSoup
 import openai
 from openai import OpenAI
 
-# Load the API key from an environment variable
-openai_api_key = os.getenv("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")
+# Retrieve API key from environment variable
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
 # Create an OpenAI client instance
-client = OpenAI(api_key=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)
-
-# Create an OpenAI client instance
-client = OpenAI()
+client = OpenAI(api_key=openai_api_key)
 
 def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
