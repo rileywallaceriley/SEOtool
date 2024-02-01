@@ -15,7 +15,7 @@ header_container = st.container()
 
 # Define the layout of the columns: [Logo, Spacer, Nav1, Nav2, Nav3, Nav4]
 # The spacer column will take up the remaining space, pushing the nav buttons to the right
-cols = header_container.columns([2, 6, 1, 1, 1, 1])
+cols = header_container.columns([2, 2, 2, 2, 2, 2])
 
 # Display the logo in the first column
 cols[0].image('https://i.ibb.co/JHrXTjz/REPU-03.png', width=200)
