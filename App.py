@@ -67,7 +67,6 @@ def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
 
 # Streamlit UI
 st.title('SEO Analysis Tool')
-
 url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
 location = st.text_input('Enter your location (e.g., "New York, USA") here:')
