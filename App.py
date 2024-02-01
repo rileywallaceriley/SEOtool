@@ -39,7 +39,7 @@ def scrape_content(url):
     content = soup.find('main').text
     return content
 
-def get_recommendations(content, ranking, url, engine='text-davinci-003'):
+def get_recommendations(content, ranking, url, engine='text-davinci-004'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     prompt = (
         f"Website URL: {url}\n"
