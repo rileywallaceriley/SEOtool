@@ -151,8 +151,10 @@ if st.session_state.meta_description:
 # Functions to display results and perform analysis
 def display_results(results):
     # Function to display results
-    # ...
+    # Ensure this function has a body, even if it's just a 'pass' statement for now
+    pass
 
 def perform_analysis(keyword, url, location):
     # Function to perform analysis
-    # ...
+    # Ensure this function has a body, even if it's just a 'pass' statement for now
+    pass
