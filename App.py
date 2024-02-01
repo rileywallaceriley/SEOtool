@@ -66,7 +66,7 @@ def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
         f"Content Preview (first 500 characters): {content_preview}\n"
         f"Current SEO Ranking: {ranking}\n\n"
         "Provide specific and actionable SEO recommendations based on the content preview and current SEO ranking. "
-        "Avoid general concepts and provide direct recommendations on how to update the main copy, meta tags, and any other on-page elements to improve SEO performance. "
+        "Avoid general concepts and provide direct recommendations on how to update the main copy, meta tags, and any other on-page elements to improve SEO performance, for example, show the current copy and explain exactly where to make changes. "
         "Also, include page speed recommendations if appropriate.\n\n"
         "Note: The main keyword should be strategically included in the content, but avoid recommendations that merely state to include the main keyword."
     )
