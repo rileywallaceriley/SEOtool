@@ -16,7 +16,7 @@ if not openai_api_key:
 # Create an OpenAI client instance
 client = OpenAI(api_key=openai_api_key)
 
-def get_seo_enhanced_copy(current_copy, keywords, links_to_embed, anchor_text):
+def get_seo_enhanced_copy(current_copy, keywords, links_to_embed):
     prompt = (
         f"Original Copy: {current_copy}\n"
         f"Keywords: {keywords}\n"
