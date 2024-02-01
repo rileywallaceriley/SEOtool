@@ -58,13 +58,13 @@ def get_recommendations(content, ranking, url, engine='text-davinci-003'):
         prompt += "\nThe site is not in the top 50. Focus on crucial improvements that can significantly impact the site's SEO performance."
 
     try:
-        response = openai.ChatCompletion.create(
+        response = openai.Completion.create(
             model=engine,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            prompt=prompt,
+            max_tokens=500,
+            temperature=0.7
         )
-        return response['choices'][0]['message']['content']
+        return response.choices[0].text.strip()
     except Exception as e:  # Catching a general exception
         return f"An error occurred: {str(e)}"
 
