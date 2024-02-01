@@ -61,7 +61,7 @@ def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
             messages=messages
         )
         # Accessing the completion message correctly
-        return completion['choices'][0]['message']['content']
+        return completion.choices[0].message.content  # Accessing attributes correctly
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
