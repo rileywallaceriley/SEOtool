@@ -2,7 +2,6 @@ import os
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-import openai
 from openai import OpenAI
 
 # Retrieve API key from environment variable
@@ -12,6 +11,9 @@ if not openai_api_key:
 
 # Create an OpenAI client instance
 client = OpenAI(api_key=openai_api_key)
+
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
 
 def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
@@ -72,4 +74,25 @@ def get_recommendations(content, ranking, url, engine='text-davinci-004'):
         return f"An error occurred: {str(e)}"
 
 # Streamlit UI
-# [rest of your Streamlit code]
+st.title('SEO Analysis Tool')
+
+url = st.text_input('Enter your URL here:')
+keyword = st.text_input('Enter your target keyword here:')
+location = st.text_input('Enter your location (e.g., "New York, USA") here:')
+
+if st.button('Analyze'):
+    if url and keyword and location:
+        ranking = get_google_search_results(keyword, url, location)
+        content = scrape_content(url)
+        recommendations = get_recommendations(content, ranking, url, engine='text-davinci-004')
+        
+        if ranking is not None and ranking <= 50:
+            st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
+        elif ranking is None:
+            st.write('Your site was not found in the top 50 results.')
+        
+        # Display the SEO recommendations
+        st.subheader('SEO Recommendations:')
+        st.write(recommendations)
+    else:
+        st.warning('Please enter a URL, a keyword, and a location.')
