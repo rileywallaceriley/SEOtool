@@ -11,7 +11,7 @@ if not openai_api_key:
     raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
 # Create an OpenAI client instance
-client = OpenAI(api_key=openai_api_key)
+client = OpenAI(api_key=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)
 
 # Create an OpenAI client instance
 client = OpenAI()
