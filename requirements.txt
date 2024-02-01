@@ -1,5 +1,5 @@
 streamlit
 beautifulsoup4
 requests
-openai>=1.0.0
+openai==0.28
 
