@@ -4,10 +4,10 @@ from openai import OpenAI
 
 # Define your navigation links
 nav_links = {
-    "Home": "http://link-to-home.com",
-    "About": "http://link-to-about.com",
-    "Services": "http://link-to-services.com",
-    "Contact": "http://link-to-contact.com",
+    "On-Page SEO": "http://link-to-home.com",
+    "Blog Writer": "http://link-to-about.com",
+    "Meta Writer": "http://link-to-services.com",
+    "SEO Enhancer": "http://link-to-contact.com",
 }
 
 # Create a container for the header (logo + navigation bar)
