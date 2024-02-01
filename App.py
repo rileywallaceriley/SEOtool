@@ -1,11 +1,17 @@
+import os
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import openai
 from openai import OpenAI
 
-# Set your API key (preferably as an environment variable)
-openai.api_key = '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'
+# Load the API key from an environment variable
+openai_api_key = os.getenv("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")
+if not openai_api_key:
+    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
+
+# Create an OpenAI client instance
+client = OpenAI(api_key=openai_api_key)
 
 # Create an OpenAI client instance
 client = OpenAI()
