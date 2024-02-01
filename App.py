@@ -21,7 +21,52 @@ client = OpenAI(api_key=openai_api_key)
 google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
 google_cse_id = '34200d9d3c6084a1f'
 
-# ... [rest of your existing code for functions get_google_search_results, scrape_content, get_load_speed] ...
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
+
+def get_google_search_results(query, site_url, location):
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        'q': query,
+        'cx': google_cse_id,
+        'key': google_api_key,
+        'num': 10,  # Number of results per page
+        'gl': location  # Location parameter
+    }
+    ranking = None
+    for start_index in range(1, 51, 10):  # Look through the first 50 results
+        params['start'] = start_index
+        response = requests.get(url, params=params)
+        results = response.json()
+
+        for i, item in enumerate(results.get('items', [])):
+            if site_url in item.get('link'):
+                ranking = i + 1 + start_index - 1  # Adjusting ranking based on the page
+                return ranking
+    return None
+
+def scrape_content(url):
+    # Ensure the URL starts with http:// or https://
+    if not url.startswith(('http://', 'https://')):
+        url = 'http://' + url
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    content = soup.find('main').text if soup.find('main') else 'Main content not found'
+    return content
+
+def get_load_speed(url):
+    pagespeed_url = f'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={url}&key={google_api_key}'
+    response = requests.get(pagespeed_url)
+    result = response.json()
+    
+    # Parse the result as needed, for example:
+    speed_score = result.get('lighthouseResult', {}).get('categories', {}).get('performance', {}).get('score')
+    if speed_score:
+        speed_score = speed_score * 100  # Convert to percentage
+    else:
+        speed_score = 'Load speed score not available'
+    return speed_score
 
 def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
