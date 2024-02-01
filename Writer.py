@@ -8,21 +8,18 @@ st.image(logo_url, width=200)  # Adjust the width as needed
 
 st.title('RepuSEO Writing Assistant')
 
-# Custom HTML and CSS for the header
-simple_header_html = """
-<div style="background-color: lightblue; padding: 10px; text-align: center;">
-    <h2>Welcome to RepuSEO-Helper</h2>
-</div>
-"""
+# Define your navigation links
+nav_links = {
+    "Home": "http://link-to-home.com",
+    "About": "http://link-to-about.com",
+    "Services": "http://link-to-services.com",
+    "Contact": "http://link-to-contact.com",
+}
 
-<!-- Include some inline JavaScript for the hamburger menu behavior (responsive) -->
-<script>
-    // Your JavaScript for the hamburger menu here
-</script>
-"""
-
-# Use st.markdown to render the custom HTML
-st.markdown(header_html, unsafe_allow_html=True)
+# Create buttons for navigation
+for label, url in nav_links.items():
+    # Use markdown to create a link that looks like a button
+    st.markdown(f'<a href="{url}" target="_blank"><button style="margin: 10px;">{label}</button></a>', unsafe_allow_html=True)
 
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
