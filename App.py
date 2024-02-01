@@ -46,30 +46,21 @@ def scrape_content(url):
     content = soup.find('main').text
     return content
 
-def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo-0125'):
+def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
-    prompt = (
-        f"Website URL: {url}\n"
-        f"Content Preview (first 500 characters): {content_preview}\n\n"
-        "Provide a detailed on-page SEO analysis with specific tasks for improvement..."
-        # [rest of your prompt]
-    )
-
-    if ranking is not None and ranking <= 50:
-        prompt += f"\nThe site is currently ranked {ranking}..."
-        # [rest of your prompt]
-
+    prompt = f"Analyze the following content from a website and provide SEO recommendations. The website is currently ranked {ranking} for its main keyword.\n\nContent Preview: {content_preview}"
+    
+    messages = [
+        {"role": "system", "content": "You are an AI trained in SEO and content analysis."},
+        {"role": "user", "content": prompt}
+    ]
+    
     try:
-        chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
+        completion = client.chat.completions.create(
             model=engine,
+            messages=messages
         )
-        return chat_completion.choices[0].message['content']
+        return completion.choices[0].message['content']
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
@@ -84,7 +75,7 @@ if st.button('Analyze'):
     if url and keyword and location:
         ranking = get_google_search_results(keyword, url, location)
         content = scrape_content(url)
-        recommendations = get_recommendations(content, ranking, url, engine='gpt-3.5-turbo-0125')
+        recommendations = get_recommendations(content, ranking, url)
         
         if ranking is not None and ranking <= 50:
             st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
