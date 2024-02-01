@@ -1,5 +1,12 @@
+import os
 import streamlit as st
 from openai import OpenAI
+
+# Display the logo at the top of the app
+logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+st.image(logo_url, width=200)  # Adjust the width as needed
+
+st.title('RepuSEO Writing Assistant')
 
 # Custom HTML and CSS for the header
 header_html = """
@@ -26,14 +33,6 @@ header_html = """
 
 # Use st.markdown to render the custom HTML
 st.markdown(header_html, unsafe_allow_html=True)
-
-# Retrieve API key from environment variable
-openai_api_key = os.getenv("OPENAI_API_KEY")
-if not openai_api_key:
-    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
-
-# Create an OpenAI client instance
-client = OpenAI(api_key=openai_api_key)
 
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -78,4 +77,3 @@ if st.button('Enhance SEO'):
         st.write(seo_enhanced_copy)
     else:
         st.warning('Please enter the required information in all input fields.')
-
