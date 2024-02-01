@@ -1,12 +1,5 @@
-import os
 import streamlit as st
 from openai import OpenAI
-
-# Display the logo at the top of the app
-logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
-st.image(logo_url, width=200)  # Adjust the width as needed
-
-st.title('RepuSEO Writing Assistant')
 
 # Custom HTML and CSS for the header
 header_html = """
@@ -24,15 +17,12 @@ header_html = """
         </ul>
     </nav>
 </div>
-
-<!-- Include some inline JavaScript for the hamburger menu behavior (responsive) -->
-<script>
-    // Your JavaScript for the hamburger menu here
-</script>
 """
 
 # Use st.markdown to render the custom HTML
 st.markdown(header_html, unsafe_allow_html=True)
+
+st.title('RepuSEO-Helper')
 
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
