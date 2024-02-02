@@ -15,8 +15,9 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
     raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
-# Create an OpenAI client instance
-client = OpenAI(api_key=openai_api_key)
+openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
 # Function to scrape content from a URL
 def scrape_content(url):
