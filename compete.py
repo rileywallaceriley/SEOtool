@@ -65,7 +65,7 @@ def generate_recommendations(competitor_data):
     )
     try:
         completion = client.completions.create(
-            model="text-davinci-002",  # or the model you're using, like 'gpt-3.5-turbo', 'text-davinci-003', etc.
+            model="text-davinci-004",  # or the model you're using, like 'gpt-3.5-turbo', 'text-davinci-003', etc.
             prompt=prompt,
             max_tokens=500
         )
