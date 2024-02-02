@@ -24,6 +24,11 @@ def scrape_competitor_data(url):
         url = 'http://' + url
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
+    return {
+        'content': content,
+        'meta_description': meta_description,
+        'meta_keywords': meta_keywords
+    }
     
     # Get main content
     content = soup.find('main').text if soup.find('main') else 'Main content not found'
@@ -41,7 +46,7 @@ def scrape_competitor_data(url):
 
 # Function to generate recommendations based on competitors' data
 def generate_recommendations(competitor_data):
-    # Consolidate competitor content and meta data
+    # Now each item in competitor_data is a dictionary
     all_content = ' '.join([data['content'] for data in competitor_data])
     all_meta_descriptions = ' '.join([data['meta_description'] for data in competitor_data])
     all_meta_keywords = ', '.join([data['meta_keywords'] for data in competitor_data])
