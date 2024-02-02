@@ -31,9 +31,17 @@ def scrape_content(url):
 # Function to generate a blog post using OpenAI's GPT model
 def generate_blog_post(content, url):
     prompt = f"Write a 350-word blog post that is SEO rich, includes the following content: {content}, and links back to {url}."
+    messages = [
+        {"role": "system", "content": "You are an AI trained in content creation and SEO optimization."},
+        {"role": "user", "content": prompt}
+    ]
+    
     try:
-        completion = client.completions.create(prompt=prompt, max_tokens=500)
-        return completion.choices[0].text.strip()
+        completion = openai.ChatCompletion.create(
+            model="gpt-4",  # Ensure this matches your desired model
+            messages=messages
+        )
+        return completion.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
