@@ -115,10 +115,10 @@ with col2:
         else:
             st.warning('Please enter a URL and a keyword.')
             
-            def scrape_content(url):
+def scrape_content(url):
     # Ensure the URL starts with http:// or https://
     if not url.startswith(('http://', 'https://')):
-        url = 'http://' + url
+    url = 'http://' + url
 
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
