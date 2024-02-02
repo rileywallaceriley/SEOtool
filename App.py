@@ -53,14 +53,24 @@ def get_google_search_results(query, site_url, location):
                 return ranking
     return None
 
+def scrape_content(url):
+    # Ensure the URL starts with http:// or https://
+    if not url.startswith(('http://', 'https://')):
+        url = 'http://' + url
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    content = soup.find('main').text if soup.find('main') else 'Main content not found'
+    return content
+
 def generate_meta_content(content, keyword):
     # Use OpenAI's GPT model to generate meta content
     prompt = f"Write a compelling meta description for a webpage about '{keyword}', using the following content: {content}."
-    try:
+    try {
         completion = client.completions.create(prompt=prompt, max_tokens=60)
         return completion.choices[0].text.strip()
-    except Exception as e:
+    } except Exception as e {
         return f"An error occurred: {str(e)}"
+    }
 
 with col4:
     if st.button('Meta'):
@@ -82,48 +92,32 @@ def generate_pillar_content(content, keyword, url):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-with col3:
-    if st.button('Pillar'):
-        if url and keyword:
-            with st.spinner('Generating Pillar Page Content...'):
-                content = scrape_content(url)  # Use your existing function to scrape content
-                pillar_content = generate_pillar_content(content, keyword, url)
-                st.text_area('Pillar Page Content:', pillar_content)
-        else:
-            st.warning('Please enter a URL and a keyword.')
-            
-            
+def generate_meta_content(content, keyword):
+    # Use OpenAI's GPT model to generate meta content
+    prompt = f"Write a compelling meta description for a webpage about '{keyword}', using the following content: {content}."
+    try:
+        completion = client.completions.create(prompt=prompt, max_tokens=60)
+        return completion.choices[0].text.strip()
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+def generate_pillar_content(content, keyword, url):
+    # Use OpenAI's GPT model to generate a blog post
+    prompt = f"Write a 250-word blog post optimized for SEO about '{keyword}', using the following context: {content}. Include a link to {url}."
+    try:
+        completion = client.completions.create(prompt=prompt, max_tokens=300)
+        return completion.choices[0].text.strip()
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
 def analyze_keywords(content, keyword):
-    # Use an external API or library for keyword suggestions based on the content
-    # Example: keyword_suggestions = get_keyword_suggestions(content)
-
-    # Fetch competition data for each keyword
-    # Example: keyword_competition = get_keyword_competition(keyword)
-
-    # Return results
+    # Placeholder for keyword analysis functionality
+    # This function should integrate with an API or library to get keyword suggestions and competition data
+    # Example:
+    # keyword_suggestions = get_keyword_suggestions(content)
+    # keyword_competition = get_keyword_competition(keyword)
+    # ...
     return keyword_suggestions, keyword_competition
-
-with col2:
-    if st.button('Keywords'):
-        if url and keyword:
-            with st.spinner('Analyzing Keywords...'):
-                content = scrape_content(url)  # Use your existing function to scrape content
-                keyword_suggestions, keyword_competition = analyze_keywords(content, keyword)
-                st.write('Keyword Suggestions:', keyword_suggestions)
-                st.write('Keyword Competition Data:', keyword_competition)
-        else:
-            st.warning('Please enter a URL and a keyword.')
-            
-def scrape_content(url):
-    # Ensure the URL starts with http:// or https://
-    if not url.startswith(('http://', 'https://')):
-        url = 'http://' + url  # This line should be indented
-
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, "html.parser")
-    content = soup.find('main').text if soup.find('main') else 'Main content not found'
-    return content
 
 def get_load_speed(url):
     pagespeed_url = f'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={url}&key={google_api_key}'
