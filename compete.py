@@ -63,7 +63,11 @@ def generate_recommendations(competitor_data):
         f"meta descriptions: {all_meta_descriptions}, and meta keywords: {all_meta_keywords}."
     )
     try:
-        completion = client.completions.create(prompt=prompt, max_tokens=500)
+        completion = client.completions.create(
+            model="text-davinci-002",  # or the model you're using, like 'gpt-3.5-turbo', 'text-davinci-003', etc.
+            prompt=prompt,
+            max_tokens=500
+        )
         return completion.choices[0].text.strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
