@@ -127,7 +127,6 @@ with col1:
                 # Existing analyze functionality
                 ranking = get_google_search_results(keyword, url, location)
                 content = scrape_content(url)
-                load_speed_score = get_load_speed(url)
                 recommendations = get_recommendations(content, ranking, url)
                 
                 if ranking is not None and ranking <= 50:
@@ -138,8 +137,6 @@ with col1:
                 st.subheader('SEO Recommendations:')
                 st.write(recommendations)
                 
-                st.subheader('Page Load Speed Score:')
-                st.write(f'Load Speed Score (out of 100): {load_speed_score}')
         else:
             st.warning('Please enter a URL, a keyword, and a location.')
 
