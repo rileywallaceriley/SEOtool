@@ -59,7 +59,7 @@ def generate_recommendations(competitor_data):
     
     # Use OpenAI's GPT model to generate recommendations based on the consolidated data
     prompt = (
-        f"Generate new meta and main copy blurbs based on the following content: {all_content}, "
+        f"Display all the meta and keywords and Generate new meta and main copy blurbs based on the following content replacing all mentions of a specific brand using [your brand here] using: {all_content}, "
         f"meta descriptions: {all_meta_descriptions}, and meta keywords: {all_meta_keywords}."
     )
     messages = [
