@@ -34,14 +34,15 @@ def generate_blog_post(content, url):
     prompt = f"Write a 350-word blog post that is SEO rich, includes the following content: {content}, and links back to {url}."
     try:
         completion = openai.Completion.create(
-            engine="davinci-codex",  # or "text-davinci-003", "text-davinci-002" based on your subscription
+            model="gpt-4",  # Specify GPT-4 model
             prompt=prompt,
-            max_tokens=500
+            max_tokens=500,
+            temperature=0.7  # Adjust as needed for creativity/variation
         )
-        return completion.choices[0].text.strip()
+        # Accessing the text of the first choice
+        return completion['choices'][0]['text'].strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
-
 
 # Streamlit UI for input fields
 url = st.text_input('Enter your URL here:')
