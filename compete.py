@@ -11,7 +11,8 @@ st.image(logo_url, width=200)
 st.title('Competitive Edge')
 
 # Retrieve API key from environment variable
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_api_key = st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=openai_api_key)
 if not openai_api_key:
     raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
