@@ -2,7 +2,7 @@ import os
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-from openai import OpenAI
+import openai  # Make sure this import is here
 
 # Display the logo at the top of the app
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
