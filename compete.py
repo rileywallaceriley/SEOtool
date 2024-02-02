@@ -77,7 +77,7 @@ def generate_recommendations(competitor_data):
         return f"An error occurred: {str(e)}"
 
 # Streamlit UI for input fields
-competitor_urls = st.text_input('Enter up to three competitor URLs separated by commas:')
+competitor_urls = st.text_input('Enter competitor URL:')
 
 if st.button('Analyze Competitors'):
     if competitor_urls:
