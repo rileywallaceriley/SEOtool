@@ -118,7 +118,7 @@ with col2:
 def scrape_content(url):
     # Ensure the URL starts with http:// or https://
     if not url.startswith(('http://', 'https://')):
-    url = 'http://' + url
+        url = 'http://' + url  # This line should be indented
 
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
