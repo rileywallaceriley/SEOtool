@@ -11,8 +11,7 @@ st.image(logo_url, width=200)
 st.title('Competitive Edge')
 
 # Retrieve API key from environment variable
-openai_api_key = st.secrets["OPENAI_API_KEY"]
-client = OpenAI(api_key=openai_api_key)
+openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
     raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
@@ -63,13 +62,17 @@ def generate_recommendations(competitor_data):
         f"Generate new meta and main copy blurbs based on the following content: {all_content}, "
         f"meta descriptions: {all_meta_descriptions}, and meta keywords: {all_meta_keywords}."
     )
+    messages = [
+        {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
+        {"role": "user", "content": prompt}
+    ]
+    
     try:
-        completion = client.completions.create(
-            model="gpt-4",  # or the model you're using, like 'gpt-3.5-turbo', 'text-davinci-003', etc.
-            prompt=prompt,
-            max_tokens=500
+        completion = client.chat.completions.create(
+            model="gpt-4",  # Specify your desired model version here
+            messages=messages
         )
-        return completion.choices[0].text.strip()
+        return completion.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
