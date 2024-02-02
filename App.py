@@ -145,9 +145,14 @@ with col1:
             with st.spinner('Analyzing...'):
                 # Existing analyze functionality
                 # ...
+with col1:
+    if st.button('Analyze'):
+        if url and keyword and location:
+            with st.spinner('Analyzing...'):
+                # Existing analyze functionality
+                # ...
         else:
             st.warning('Please enter a URL, a keyword, and a location.')  # This line should be properly indented under 'else'
-
 with col2:
     if st.button('Keywords'):
         if url and keyword:
