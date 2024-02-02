@@ -29,9 +29,6 @@ client = OpenAI(api_key=openai_api_key)
 google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
 google_cse_id = '34200d9d3c6084a1f'
 
-google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
-google_cse_id = '34200d9d3c6084a1f'
-
 def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
@@ -61,36 +58,6 @@ def scrape_content(url):
     soup = BeautifulSoup(response.content, "html.parser")
     content = soup.find('main').text if soup.find('main') else 'Main content not found'
     return content
-
-def generate_meta_content(content, keyword):
-    # Use OpenAI's GPT model to generate meta content
-    prompt = f"Write a compelling meta description for a webpage about '{keyword}', using the following content: {content}."
-    try {
-        completion = client.completions.create(prompt=prompt, max_tokens=60)
-        return completion.choices[0].text.strip()
-    } except Exception as e {
-        return f"An error occurred: {str(e)}"
-    }
-
-with col4:
-    if st.button('Meta'):
-        if url and keyword:
-            with st.spinner('Generating Meta Content...'):
-                content = scrape_content(url)  # Use your existing function to scrape content
-                meta_content = generate_meta_content(content, keyword)
-                st.text_area('Meta Description:', meta_content)
-        else:
-            st.warning('Please enter a URL and a keyword.')
-            
-            
-def generate_pillar_content(content, keyword, url):
-    # Use OpenAI's GPT model to generate a blog post
-    prompt = f"Write a 250-word blog post optimized for SEO about '{keyword}', using the following context: {content}. Include a link to {url}."
-    try:
-        completion = client.completions.create(prompt=prompt, max_tokens=300)
-        return completion.choices[0].text.strip()
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
 
 def generate_meta_content(content, keyword):
     # Use OpenAI's GPT model to generate meta content
