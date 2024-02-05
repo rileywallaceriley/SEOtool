@@ -14,8 +14,8 @@ nltk.download('punkt')
 stop_words = set(nltk.corpus.stopwords.words('english'))
 
 # Define your Google Cloud API key and Custom Search Engine ID
-google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
-google_cse_id = '34200d9d3c6084a1f'
+GOOGLE_API_KEY = 'YOUR_GOOGLE_CLOUD_API_KEY'
+GOOGLE_CSE_ID = 'YOUR_CUSTOM_SEARCH_ENGINE_ID'
 
 # Function to purify text by removing stop words
 def purifyText(string):
