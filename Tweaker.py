@@ -13,35 +13,39 @@ nltk.download('stopwords')
 nltk.download('punkt')
 stop_words = set(nltk.corpus.stopwords.words('english'))
 
-# Define your Google Cloud API key and Custom Search Engine ID
-GOOGLE_API_KEY = 'YOUR_GOOGLE_CLOUD_API_KEY'
-GOOGLE_CSE_ID = 'YOUR_CUSTOM_SEARCH_ENGINE_ID'
-
 # Function to purify text by removing stop words
 def purifyText(string):
     words = nltk.word_tokenize(string)
     return (" ".join([word for word in words if word not in stop_words]))
 
 # Function to search using Google Custom Search JSON API
-def searchGoogle(query, num, api_key=GOOGLE_API_KEY, cse_id=GOOGLE_CSE_ID):
+def searchGoogle(query, num):
+    api_key = st.secrets["google"]["api_key"]
+    cse_id = st.secrets["google"]["cse_id"]
     query = quote_plus(query)
     url = f"https://www.googleapis.com/customsearch/v1?q={query}&cx={cse_id}&key={api_key}&num={num}"
-
-    data = requests.get(url).json()
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error during Google Search: {e}")
+        return []
+    
     search_items = data.get("items")
-    
-    urls = []
-    if search_items:
-        for item in search_items:
-            urls.append(item.get("link"))
-    
+    urls = [item.get("link") for item in search_items] if search_items else []
     return urls[:num]
 
 # Function to extract text from a webpage
 def extractText(url):
-    page = requests.get(url)
-    soup = bs(page.text, 'html.parser')
-    return soup.get_text()
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        soup = bs(response.text, 'html.parser')
+        return soup.get_text()
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error extracting text from URL {url}: {e}")
+        return ""
 
 # Function to verify web content for similarity
 def webVerify(string, results_per_sentence):
@@ -83,8 +87,11 @@ if st.button('Check for Plagiarism'):
     if input_text:
         with st.spinner('Checking for plagiarism...'):
             plagiarism_report = report(input_text)
-            formatted_report = returnTable(plagiarism_report)
-            st.markdown('## Plagiarism Check Results')
-            st.write(formatted_report, unsafe_allow_html=True)
+            if plagiarism_report:
+                formatted_report = returnTable(plagiarism_report)
+                st.markdown('## Plagiarism Check Results')
+                st.write(formatted_report, unsafe_allow_html=True)
+            else:
+                st.info('No plagiarism detected or no data available from the search.')
     else:
         st.warning('Please enter the text you want to check.')
