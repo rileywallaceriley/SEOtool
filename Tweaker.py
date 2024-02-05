@@ -77,9 +77,11 @@ def returnTable(dictionary):
     return df.to_html()
 
 # Streamlit UI Components
-st.title('RepuSEO Plagiarism Checker')
+
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)  # Adjust the width as needed
+
+st.title('RepuSEO Plagiarism Checker')
 
 input_text = st.text_area('Text to Check for Plagiarism:', height=300)
 
