@@ -4,30 +4,37 @@ import requests
 from bs4 import BeautifulSoup as bs
 from difflib import SequenceMatcher
 import pandas as pd
+from urllib.parse import quote_plus
 import warnings
 
 warnings.filterwarnings("ignore", module='bs4')
 
 nltk.download('stopwords')
 nltk.download('punkt')
-stop_words = set(nltk.corpus.stopwords.words('english')) 
+stop_words = set(nltk.corpus.stopwords.words('english'))
+
+# Define your Google Cloud API key and Custom Search Engine ID
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
 
 # Function to purify text by removing stop words
 def purifyText(string):
     words = nltk.word_tokenize(string)
     return (" ".join([word for word in words if word not in stop_words]))
 
-# Function to search on Bing and get URLs
-def searchBing(query, num):
-    url = 'https://www.bing.com/search?q=' + query
+# Function to search using Google Custom Search JSON API
+def searchGoogle(query, num, api_key=GOOGLE_API_KEY, cse_id=GOOGLE_CSE_ID):
+    query = quote_plus(query)
+    url = f"https://www.googleapis.com/customsearch/v1?q={query}&cx={cse_id}&key={api_key}&num={num}"
+
+    data = requests.get(url).json()
+    search_items = data.get("items")
+    
     urls = []
-    page = requests.get(url, headers = {'User-agent': 'John Doe'})
-    soup = bs(page.text, 'html.parser')
-    for link in soup.find_all('a'):
-        url = str(link.get('href'))
-        if url.startswith('http'):
-            if not url.startswith('http://go.m') and not url.startswith('https://go.m'):
-                urls.append(url)
+    if search_items:
+        for item in search_items:
+            urls.append(item.get("link"))
+    
     return urls[:num]
 
 # Function to extract text from a webpage
@@ -40,10 +47,10 @@ def extractText(url):
 def webVerify(string, results_per_sentence):
     sentences = nltk.sent_tokenize(string)
     matching_sites = []
-    for url in searchBing(query=string, num=results_per_sentence):
+    for url in searchGoogle(query=string, num=results_per_sentence):
         matching_sites.append(url)
     for sentence in sentences:
-        for url in searchBing(query=sentence, num=results_per_sentence):
+        for url in searchGoogle(query=sentence, num=results_per_sentence):
             matching_sites.append(url)
     return (list(set(matching_sites)))
 
