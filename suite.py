@@ -4,6 +4,15 @@ import streamlit as st
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
 
+# Define the light orange color for the button based on your logo
+light_orange = "#f4a261"  # This is an example hex code, adjust as needed to match your logo
+
+# Function to create a button with custom color
+def create_link_button(label, url, color=light_orange):
+    button_html = f"""<a href="{url}" target="_blank"><button style='margin: 10px; padding: 10px; border: none; color: black; background-color: {color};'>{label}</button></a>"""
+    st.markdown(button_html, unsafe_allow_html=True)
+
+
 # Page Title
 st.title('SEO Tools Suite')
 
