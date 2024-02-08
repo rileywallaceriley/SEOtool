@@ -1,5 +1,4 @@
 import streamlit as st
-# Assuming API calls are necessary; import requests or another library if needed.
 
 # Display the logo
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
@@ -17,36 +16,39 @@ Our tools are crafted to provide you with competitive insights, enhance your blo
 and assist in optimizing your content for better search engine rankings. With our suite, empower your content to reach its maximum potential.
 """)
 
-# Example function to call an API endpoint (Adjust according to your real API call requirements)
-def call_tool_api(tool_url, data):
-    # Mock function to simulate an API call
-    # Replace with actual requests.post() or appropriate call
-    return f"Calling {tool_url} with {data}"
+# Function placeholders for API calls (Assuming they're necessary)
+# def call_tool_api(tool_url, data):
+#     # Your API call logic here
+#     pass
 
-# Competitive Edge Button
+# Tool: Competitive Edge
+st.markdown("### Competitive Edge")
+st.write("Gain an advantage by analyzing your competitors’ SEO strategies to understand their strengths and weaknesses.")
 if st.button('Use Now - Competitive Edge'):
-    # Simulate API call
-    result = call_tool_api('COMPETITIVE_EDGE_API_URL', {'data': 'example'})
+    # Simulated API call for demonstration
     st.success("Competitive Edge activated!")
-    st.json(result)  # Displaying the mock result as JSON for demonstration
+    # Example: result = call_tool_api('COMPETITIVE_EDGE_API_URL', {'data': 'example'})
 
-# Blog SEO Helper Button
+# Tool: Blog SEO Helper
+st.markdown("### Blog SEO Helper")
+st.write("Optimize your blog posts with targeted keywords and content strategies to improve your visibility and engagement.")
 if st.button('Use Now - Blog SEO Helper'):
-    # Simulate API call
-    result = call_tool_api('BLOG_SEO_HELPER_API_URL', {'data': 'example'})
+    # Simulated API call for demonstration
     st.success("Blog SEO Helper activated!")
-    st.json(result)
+    # Example: result = call_tool_api('BLOG_SEO_HELPER_API_URL', {'data': 'example'})
 
-# RepuSEO Plagiarism Checker Button
+# Tool: RepuSEO Plagiarism Checker
+st.markdown("### RepuSEO Plagiarism Checker")
+st.write("Ensure your content is unique and free of plagiarism, enhancing its quality and SEO performance.")
 if st.button('Use Now - RepuSEO Plagiarism Checker'):
-    # Simulate API call
-    result = call_tool_api('REPUSEO_PLAGIARISM_CHECKER_API_URL', {'data': 'example'})
+    # Simulated API call for demonstration
     st.success("RepuSEO Plagiarism Checker activated!")
-    st.json(result)
+    # Example: result = call_tool_api('REPUSEO_PLAGIARISM_CHECKER_API_URL', {'data': 'example'})
 
-# RepuSEO-Helper Button
+# Tool: RepuSEO-Helper
+st.markdown("### RepuSEO-Helper")
+st.write("Get personalized recommendations to improve your website’s SEO and overall user experience.")
 if st.button('Use Now - RepuSEO-Helper'):
-    # Simulate API call
-    result = call_tool_api('REPUSEO_HELPER_API_URL', {'data': 'example'})
+    # Simulated API call for demonstration
     st.success("RepuSEO-Helper activated!")
-    st.json(result)
+    # Example: result = call_tool_api('REPUSEO_HELPER_API_URL', {'data': 'example'})
