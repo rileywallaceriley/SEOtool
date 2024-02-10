@@ -26,45 +26,47 @@ def scrape_competitor_data(url):
         response = requests.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
         
-        # Get main content
-        content = soup.find('main').text if soup.find('main') else 'Main content not found'
+        # Get main content and additional sections for a comprehensive analysis
+        content_sections = [soup.find(tag).text for tag in ['main', 'article', 'section'] if soup.find(tag)]
+        content = ' '.join(content_sections).replace('\n', ' ') if content_sections else 'Relevant content not found'
         
         # Get meta tags (description and keywords)
         meta_description = soup.find('meta', attrs={'name': 'description'}) or ''
         meta_keywords = soup.find('meta', attrs={'name': 'keywords'}) or ''
         
         if meta_description:
-            meta_description = meta_description.get('content')
+            meta_description = meta_description.get('content', '').replace('\n', ' ')
         if meta_keywords:
-            meta_keywords = meta_keywords.get('content')
+            meta_keywords = meta_keywords.get('content', '').replace('\n', ' ')
         
         return {
-            'content': content.replace('\n', ' '),
-            'meta_description': meta_description.replace('\n', ' '),
-            'meta_keywords': meta_keywords.replace('\n', ' ')
+            'content': content,
+            'meta_description': meta_description,
+            'meta_keywords': meta_keywords
         }
     except Exception as e:
+        st.error(f"Failed to scrape content: {str(e)}")
         return {
-            'content': 'Failed to scrape content',
+            'content': 'Exception occurred',
             'meta_description': '',
             'meta_keywords': ''
         }
 
-# Function to generate recommendations based on competitors' data
-def generate_recommendations(competitor_data):
-    # Consolidate competitor content and meta data
-    all_content = ' '.join([data['content'] for data in competitor_data])
-    all_meta_descriptions = ' '.join([data['meta_description'] for data in competitor_data])
-    all_meta_keywords = ', '.join([data['meta_keywords'] for data in competitor_data])
+# Function to generate SEO analysis and recommendations
+def generate_seo_analysis_and_recommendations(user_data, competitor_data):
+    analysis_prompt = "Analyze the competitors' SEO strategies and provide recommendations for improvement. Include headers and bullet points for clarity. Provide specific copy examples for recommendations.\n\n"
     
-    # Use OpenAI's GPT model to generate recommendations based on the consolidated data
-    prompt = (
-        f"do two distinct functions; first Display all the meta, main page copy and meta that currently exists. that shiidl be displayed under the header current scrapped metathen, Generate new meta and main copy blurbs based on the  content replacing all mentions of a specific brand using [your brand here] : {all_content}, "
-        f"meta descriptions: {all_meta_descriptions}, and meta keywords: {all_meta_keywords}."
-    )
+    # Append user's data to the prompt if available
+    if user_data:
+        analysis_prompt += f"User's Website Content: {user_data['content']}\nUser's Meta Description: {user_data['meta_description']}\nUser's Meta Keywords: {user_data['meta_keywords']}\n\n"
+    
+    # Append competitors' data to the prompt
+    for data in competitor_data:
+        analysis_prompt += f"Competitor's Website Content: {data['content']}\nCompetitor's Meta Description: {data['meta_description']}\nCompetitor's Meta Keywords: {data['meta_keywords']}\n\n"
+
     messages = [
-        {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
-        {"role": "user", "content": prompt}
+        {"role": "system", "content": "You are an AI trained in advanced SEO, content optimization, and competitive analysis."},
+        {"role": "user", "content": analysis_prompt}
     ]
     
     try:
@@ -72,20 +74,6 @@ def generate_recommendations(competitor_data):
             model="gpt-4",  # Specify your desired model version here
             messages=messages
         )
-        return completion.choices[0].message.content
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
-
-# Streamlit UI for input fields
-competitor_urls = st.text_input('Enter competitor URL:')
-
-if st.button('Analyze Competitors'):
-    if competitor_urls:
-        competitor_urls = [url.strip() for url in competitor_urls.split(',')]
-        with st.spinner('Analyzing Competitors...'):
-            competitor_data = [scrape_competitor_data(url) for url in competitor_urls]
-            recommendations = generate_recommendations(competitor_data)
-            st.subheader('Recommendations based on Competitor Analysis:')
-            st.write(recommendations)
-    else:
-        st.warning('Please enter at least one competitor URL.')
+        recommendations = completion.choices[0].message.content
+        # Format recommendations for better readability
+        formatted_recommendations = recommendations.replace('\n', '<
