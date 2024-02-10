@@ -4,16 +4,22 @@ import streamlit as st
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
 
-
+# Add space after the logo
+st.write("\n\n")  # Adds extra space after the logo
 
 # Embed YouTube Video
-st.video('https://youtu.be/G6GIb9nwUYE?si=LpLyaIb9JKC9Ya6B')
+st.video('https://www.youtube.com/watch?v=XXXXX')
 
-# Brief overview of your tools
-st.write("""
-## Elevate Your SEO Game
-Unlock the full potential of your website with our SEO Tools Suite. We take the complexity out of SEO, making it accessible and actionable for everyone. Whether you're a small business owner, a solo entrepreneur, or a content creator, our tools are designed to give you clear, straightforward recommendations that drive results. Improve your search engine rankings, learn from your competition, and make SEO work for you.
-""")
+# Brief overview of your tools, centered
+st.markdown("""
+<div style="text-align: center;">
+    <h2>Elevate Your SEO Game</h2>
+    <p>Unlock the full potential of your website with our SEO Tools Suite. We take the complexity out of SEO, making it accessible and actionable for everyone. Whether you're a small business owner, a solo entrepreneur, or a content creator, our tools are designed to give you clear, straightforward recommendations that drive results. Improve your search engine rankings, learn from your competition, and make SEO work for you.</p>
+</div>
+""", unsafe_allow_html=True)
+
+# Add a spacer line after the section
+st.markdown("---")
 
 # Define the light orange color for the button based on your logo
 light_orange = "#f4a261"  # Example hex code, adjust as needed to match your logo
