@@ -21,12 +21,12 @@ light_orange = "#f4a261"  # Example hex code, adjust as needed to match your log
 
 # Updated function to create a button with custom color and centered text
 def create_link_button(label, url, color=light_orange):
-    button_html = f"""<div style="text-align: center; width: 90%; margin: 25px auto;"><a href="{url}" target="_blank"><button style='padding: 10px; border-radius: 5px; border: none; color: black; background-color: {color};'>{label}</button></a></div>"""
+    button_html = f"""<div style="text-align: center; width: 80%; margin: 25px auto;"><a href="{url}" target="_blank"><button style='padding: 10px; border-radius: 5px; border: none; color: black; background-color: {color};'>{label}</button></a></div>"""
     st.markdown(button_html, unsafe_allow_html=True)
 
-# Adjusted sections for centered text, constrained width to 90%, and increased spacing to 25px
+# Adjusted sections for centered text, constrained width to 80%, and increased spacing to 25px
 def display_tool_section(header, description, button_label, button_url):
-    st.markdown(f"<div style='text-align: center; width: 90%; margin: 25px auto; padding-top: 25px; padding-bottom: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);'><h2 style='margin-bottom: 0;'>{header}</h2><p>{description}</p></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: center; width: 80%; margin: 25px auto; padding-top: 25px; padding-bottom: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);'><h2 style='margin-bottom: 0;'>{header}</h2><p>{description}</p></div>", unsafe_allow_html=True)
     create_link_button(button_label, button_url)
 
 # Use the updated function to display each tool section
