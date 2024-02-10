@@ -16,38 +16,39 @@ if not openai_api_key:
 # Create an OpenAI client instance
 client = OpenAI(api_key=openai_api_key)
 
-def get_seo_enhanced_copy(current_copy, keywords, links_to_embed):
+def generate_seo_blog_post(topic_description, keywords, links_to_embed):
     prompt = (
-        f"Original Copy: {current_copy}\n"
-        f"Keywords: {keywords}\n"
-        f"Links to Embed: {links_to_embed}\n"
-        "Edit the copy to improve its SEO score. Start the results by providing a current SEO score, then provide a final SEO score after the copy is edited. Also, provide a brief explainer of the changes for learning purposes. Your output should be in html format; no need to add header tags, page, and <p>and all that...only add all teh relevant header tags and href tags. you shoudl be able to knwo teh appropriate place to insert the given links. Also include all teh necessary meta data for SEO purposes. The meta shoudl be in a different section, as you shouldn't be delivering and header or body tags. Please present teh results with proper spacing as teh HTML code needs to be easily read by teh user. Thsi means addind spaces between paragraphs, for example ... for the changes made section add a proper bolded header. Do teh same for the meta section. The meta shoudl appear seperate from the HTMl code, with a header that says META. and teh meta shoudl not be in html format."
+        f"Write a 250-word blog post based on the following topic description: {topic_description}\n"
+        f"Incorporate these keywords: {keywords}.\n"
+        f"Include these links within the content where appropriate: {links_to_embed}.\n"
+        "Ensure the blog post is engaging, informative, and optimized for SEO."
     )
     
-    messages = [
-        {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
-        {"role": "user", "content": prompt}
-    ]
-    
     try:
-        completion = client.chat.completions.create(
-            model='gpt-3.5-turbo',
-            messages=messages
+        completion = client.completions.create(
+            model='text-davinci-003',  # Consider updating this to 'gpt-4' or the latest available model
+            prompt=prompt,
+            temperature=0.7,
+            max_tokens=1024,  # Adjust as necessary to ensure the output length is as desired
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0
         )
-        return completion.choices[0].message.content
+        return completion.choices[0].text.strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
+
 # Streamlit UI for input fields
-current_copy = st.text_area('Current Copy:', height=300)
+topic_description = st.text_area('Blog Topic Description:', height=150)
 keywords = st.text_input('Keywords (separated by comma):')
 links_to_embed = st.text_input('Links to Embed (separated by comma):')
 
-if st.button('Enhance SEO'):
-    if current_copy and keywords and links_to_embed:
-        with st.spinner('Enhancing SEO...'):
-            seo_enhanced_copy = get_seo_enhanced_copy(current_copy, keywords, links_to_embed)
+if st.button('Generate Blog Post'):
+    if topic_description and keywords and links_to_embed:
+        with st.spinner('Generating SEO-optimized blog post...'):
+            blog_post = generate_seo_blog_post(topic_description, keywords, links_to_embed)
         
-        st.subheader('SEO Enhanced Copy:')
-        st.write(seo_enhanced_copy)
+        st.subheader('SEO-Optimized Blog Post:')
+        st.text_area('Generated Post:', value=blog_post, height=250, help="Here's the generated SEO-optimized blog post based on your input.")
     else:
         st.warning('Please enter the required information in all input fields.')
