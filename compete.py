@@ -33,17 +33,26 @@ def scrape_competitor_data(url):
     except Exception as e:
         return {'url': url, 'error': str(e)}
 
-def generate_seo_recommendations(engine='gpt-4', prompt='Analyze the following SEO strategy:'):
-    """Generate SEO recommendations using GPT-4 based on a given prompt."""
+def generate_seo_recommendations(content, url, engine='gpt-4.5-turbo', purpose='seo-analysis'):
+    """
+    Generates SEO recommendations using a GPT chat model based on provided content and URL.
+    """
+    content_preview = (content[:500] + '...') if len(content) > 500 else content
+    prompt = f"Given the content: '{content_preview}' from the URL: {url}, provide detailed SEO recommendations:"
+
     try:
         with st.spinner('Generating SEO recommendations...'):
-            response = client.completions.create(
+            completion = client.ChatCompletion.create(
                 model=engine,
-                prompt=prompt,
-                temperature=0.5,
+                messages=[
+                    {"role": "system", "content": "You are a highly knowledgeable SEO expert."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
                 max_tokens=1024,
             )
-            return response.choices[0].text.strip()
+            recommendations = completion.choices[0].message['content'].strip()
+            return recommendations
     except Exception as e:
         return f"An error occurred while generating recommendations: {str(e)}"
 
@@ -60,8 +69,8 @@ if st.button('Analyze Competitors'):
         for url in competitor_urls:
             data = scrape_competitor_data(url)
             if 'error' not in data:
-                prompt = f"URL: {data['url']}\nTitle: {data['title']}\nMeta Description: {data['meta_description']}\n\nProvide SEO recommendations:"
-                recommendations = generate_seo_recommendations(prompt=prompt)
+                content = f"Title: {data['title']}\nMeta Description: {data['meta_description']}"
+                recommendations = generate_seo_recommendations(content, data['url'])
                 analysis_results.append((data['url'], recommendations))
             else:
                 analysis_results.append((url, "Failed to analyze this URL."))
