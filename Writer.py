@@ -26,7 +26,7 @@ def generate_seo_blog_post(topic_description, keywords, links_to_embed):
     
     try:
         completion = client.completions.create(
-            model='text-davinci-003',  # Consider updating this to 'gpt-4' or the latest available model
+            model='gpt-4',  # Consider updating this to 'gpt-4' or the latest available model
             prompt=prompt,
             temperature=0.7,
             max_tokens=1024,  # Adjust as necessary to ensure the output length is as desired
