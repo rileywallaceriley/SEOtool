@@ -2,16 +2,17 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import streamlit as st
-from openai import OpenAI
+import openai
 
-# Initialize the OpenAI client with your API key
+# Ensure you have the latest version of the OpenAI library
+# pip install --upgrade openai
+
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
     st.error("The OPENAI_API_KEY environment variable is not set.")
     st.stop()
-client = OpenAI(api_key=openai_api_key)
+openai.api_key = openai_api_key
 
-# Display the logo and app title at the top of the UI
 st.image('https://i.ibb.co/VvYtGFg/REPU-11.png', width=200)
 st.title('Competitive Edge')
 
@@ -19,44 +20,32 @@ def scrape_competitor_data(url):
     """Scrape the title and meta description from a given URL."""
     try:
         response = requests.get(url)
-        if response.status_code != 200:
-            return {'url': url, 'error': 'Failed to fetch content'}
         soup = BeautifulSoup(response.content, "html.parser")
         title = soup.title.text if soup.title else 'No title found'
         meta_description = soup.find('meta', attrs={'name': 'description'})
         meta_description_content = meta_description['content'] if meta_description else 'No meta description provided'
-        return {
-            'url': url,
-            'title': title,
-            'meta_description': meta_description_content,
-        }
+        return {'url': url, 'title': title, 'meta_description': meta_description_content}
     except Exception as e:
         return {'url': url, 'error': str(e)}
 
-def generate_seo_recommendations(content, url, engine='gpt-4.5-turbo', purpose='seo-analysis'):
-    """
-    Generates SEO recommendations using a GPT chat model based on provided content and URL.
-    """
-    content_preview = (content[:500] + '...') if len(content) > 500 else content
-    prompt = f"Given the content: '{content_preview}' from the URL: {url}, provide detailed SEO recommendations:"
-
+def generate_seo_recommendations(content, url, engine='gpt-4'):
+    """Generate SEO recommendations using GPT-4 based on provided content and URL."""
+    prompt = f"Based on the following content from {url}, provide detailed SEO recommendations:\nContent: {content[:500]}..."
     try:
         with st.spinner('Generating SEO recommendations...'):
-            completion = client.ChatCompletion.create(
+            response = openai.Completion.create(
                 model=engine,
-                messages=[
-                    {"role": "system", "content": "You are a highly knowledgeable SEO expert."},
-                    {"role": "user", "content": prompt}
-                ],
+                prompt=prompt,
                 temperature=0.7,
                 max_tokens=1024,
+                top_p=1.0,
+                frequency_penalty=0.0,
+                presence_penalty=0.0
             )
-            recommendations = completion.choices[0].message['content'].strip()
-            return recommendations
+            return response.choices[0].text.strip()
     except Exception as e:
         return f"An error occurred while generating recommendations: {str(e)}"
 
-# Streamlit UI for collecting user and competitor URLs
 user_url = st.text_input('Enter your website URL:')
 competitor_urls_input = st.text_area('Enter competitor URLs (comma-separated):')
 
@@ -69,8 +58,7 @@ if st.button('Analyze Competitors'):
         for url in competitor_urls:
             data = scrape_competitor_data(url)
             if 'error' not in data:
-                content = f"Title: {data['title']}\nMeta Description: {data['meta_description']}"
-                recommendations = generate_seo_recommendations(content, data['url'])
+                recommendations = generate_seo_recommendations(data['meta_description'], data['url'], engine='gpt-4')
                 analysis_results.append((data['url'], recommendations))
             else:
                 analysis_results.append((url, "Failed to analyze this URL."))
