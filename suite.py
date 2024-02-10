@@ -3,7 +3,7 @@ import streamlit as st
 # Display the logo
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
-<br>
+
 # Add space after the logo
 st.write("\n\n")  # Adds extra space after the logo
 
