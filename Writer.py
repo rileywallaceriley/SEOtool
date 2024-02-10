@@ -4,7 +4,7 @@ from openai import OpenAI
 
 # Display the logo at the top of the app
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
-st.image(logo_url, width=200)  # Adjust the width as needed
+st.image(logo_url, width=200)
 
 st.title('RepuSEO Writing Assistant')
 
@@ -18,7 +18,7 @@ client = OpenAI(api_key=openai_api_key)
 
 def generate_seo_blog_post(topic_description, keywords, links_to_embed):
     prompt = (
-        f"Write a 250-word blog post based on the following topic description: {topic_description}\n"
+        f"Write a 350-word blog post based on the following topic description: {topic_description}\n"
         f"Incorporate these keywords: {keywords}.\n"
         f"Include these links within the content where appropriate: {links_to_embed}.\n"
         "Ensure the blog post is engaging, informative, and optimized for SEO."
@@ -26,10 +26,10 @@ def generate_seo_blog_post(topic_description, keywords, links_to_embed):
     
     try:
         completion = client.completions.create(
-            model='gpt-4',  # Consider updating this to 'gpt-4' or the latest available model
+            model='gpt-4',  # Updated to use GPT-4
             prompt=prompt,
             temperature=0.7,
-            max_tokens=1024,  # Adjust as necessary to ensure the output length is as desired
+            max_tokens=1024,  # Adjust as necessary
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
