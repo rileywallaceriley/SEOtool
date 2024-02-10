@@ -29,26 +29,21 @@ def scrape_competitor_data(url):
     try:
         response = requests.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
-        
-        # Extract main content and meta tags
         content_sections = [soup.find(tag).text for tag in ['main', 'article', 'section'] if soup.find(tag)]
         content = ' '.join(content_sections).replace('\n', ' ') if content_sections else 'Content not found'
         meta_description = soup.find('meta', attrs={'name': 'description'})
         meta_description_content = meta_description['content'] if meta_description else 'No meta description provided'
-        
-        # Use the custom keyword extraction function
         meta_keywords_content = extract_keywords_from_text(content)
         
         return {
             'url': url,
-            'content': content,
             'meta_description': meta_description_content,
             'meta_keywords': meta_keywords_content
         }
     except Exception as e:
         return {'url': url, 'error': str(e)}
 
-# Streamlit UI
+# Streamlit UI with structured output
 st.title('SEO Competitive Analysis Tool')
 user_url = st.text_input('Enter your website URL:')
 competitor_urls_input = st.text_area('Enter competitor URLs (comma-separated):')
@@ -59,12 +54,26 @@ if st.button('Analyze Competitors'):
         competitor_data = [scrape_competitor_data(url) for url in competitor_urls]
         user_data = scrape_competitor_data(user_url) if user_url else {}
 
-        # Display scraped data (for demonstration purposes)
-        st.subheader('Your Website Data:')
-        st.write(user_data)
-
-        st.subheader('Competitor Data:')
+        # Displaying the analysis in a structured format
+        if user_data:
+            st.subheader('Your Website Analysis')
+            st.write(f"**URL:** {user_url}")
+            st.write(f"**Meta Description:** {user_data.get('meta_description', 'Not found')}")
+            st.write(f"**Extracted Keywords:** {user_data.get('meta_keywords', 'Not found')}")
+        
+        st.subheader('Competitor Analysis')
         for data in competitor_data:
-            st.write(data)
+            st.markdown(f"**URL:** {data.get('url')}")
+            st.markdown(f"**Meta Description:** {data.get('meta_description', 'Not found')}")
+            st.markdown(f"**Extracted Keywords:** {data.get('meta_keywords', 'Not found')}")
+            st.markdown("---")
+
+        # Placeholder for SEO Recommendations based on analysis
+        st.subheader('SEO Recommendations')
+        st.markdown("""
+        - **Enhance Your Meta Descriptions**: Ensure they are compelling and contain relevant keywords.
+        - **Review Your Content**: Incorporate keywords that are frequently used by your competitors but are missing from your content.
+        - **Monitor Your Competitors**: Regularly check their SEO strategies and adapt your approach accordingly.
+        """)
     else:
         st.warning('Please enter at least one competitor URL.')
