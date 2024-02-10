@@ -2,10 +2,7 @@ import os
 import streamlit as st
 import openai
 
-# Ensure your OpenAI library is up to date for this script to work:
-# pip install --upgrade openai
-
-# Display the logo and set up the app title
+# Display the logo at the top of the app
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
 st.title('RepuSEO Writing Assistant')
@@ -13,28 +10,30 @@ st.title('RepuSEO Writing Assistant')
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
-    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
+    st.error("The OPENAI_API_KEY environment variable is not set.")
+    st.stop()
 
-# Initialize OpenAI client with your API key
+# Initialize OpenAI client
 openai.api_key = openai_api_key
 
-def generate_seo_blog_post(topic_description, keywords, links_to_embed):
-    """Generate an SEO-optimized blog post using GPT-4."""
-    prompt = f"Write a 250-word blog post based on the topic: '{topic_description}', including keywords: {keywords}, and embedding links: {links_to_embed}. Make sure the post is engaging, informative, and optimized for SEO."
+def generate_seo_blog_post(topic_description, keywords, links_to_embed, engine='gpt-4', purpose='general'):
+    """Generate an SEO-optimized blog post using a specified GPT model."""
+    prompt = f"Write a 250-word blog post based on the topic: '{topic_description}', " \
+             f"including keywords: {keywords}, and embedding links: {links_to_embed}. " \
+             "Ensure the post is engaging, informative, and optimized for SEO."
 
     try:
         with st.spinner('Generating SEO-optimized blog post...'):
             response = openai.Completion.create(
-                model="gpt-4",  # Specify GPT-4 model
+                model=engine,  # Use the engine parameter to specify the model
                 prompt=prompt,
                 temperature=0.7,
-                max_tokens=1024,  # Adjust based on desired output length
+                max_tokens=600,  # Adjusted for approximately 250 words
                 top_p=1.0,
                 frequency_penalty=0.0,
                 presence_penalty=0.0
             )
-            blog_post = response.choices[0].text.strip()
-            return blog_post
+            return response.choices[0].text.strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
