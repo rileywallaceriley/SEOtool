@@ -14,7 +14,7 @@ st.video('https://youtu.be/G6GIb9nwUYE?si=kUrABMKxnwtoKO-M')
 st.markdown("""
 <div style="text-align: center;">
     <h2>Elevate Your SEO Game</h2>
-    <p>Unlock the full potential of your website with our SEO Tools Suite. We take the complexity out of SEO, making it accessible and actionable for everyone. Whether you're a small business owner, a solo entrepreneur, or a content creator, our tools are designed to give you clear, straightforward recommendations that drive results. Improve your search engine rankings, learn from your competition, and make SEO work for you.<br></p>
+    <p>Unlock the full potential of your website with our SEO Tools Suite. We take the complexity out of SEO, making it accessible and actionable for everyone. Whether you're a small business owner, a solo entrepreneur, or a content creator, our tools are designed to give you clear, straightforward recommendations that drive results. Improve your search engine rankings, learn from your competition, and make SEO work for you.<br><br></p>
 </div>
 """, unsafe_allow_html=True)
 
