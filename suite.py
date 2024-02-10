@@ -19,27 +19,21 @@ Unlock the full potential of your website with our SEO Tools Suite. We take the 
 # Define the light orange color for the button based on your logo
 light_orange = "#f4a261"  # Example hex code, adjust as needed to match your logo
 
-# Function to create a button with custom color
+# Updated function to create a button with custom color and centered text
 def create_link_button(label, url, color=light_orange):
-    button_html = f"""<a href="{url}" target="_blank"><button style='margin: 10px; padding: 10px; border-radius: 5px; border: none; color: black; background-color: {color};'>{label}</button></a>"""
+    button_html = f"""<div style="text-align: center; width: 50%; margin: 10px auto;"><a href="{url}" target="_blank"><button style='padding: 10px; border-radius: 5px; border: none; color: black; background-color: {color};'>{label}</button></a></div>"""
     st.markdown(button_html, unsafe_allow_html=True)
 
-# Competitive Edge
-st.subheader("Competitive Edge")
-st.write("Analyze and apply winning SEO strategies from your competitors directly into your campaign.")
-create_link_button("Use Now - Competitive Edge", "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app")
+# Adjusted sections for centered text and constrained width
+def display_tool_section(header, description, button_label, button_url):
+    st.markdown(f"<div style='text-align: center; width: 50%; margin: 0 auto;'><h2 style='margin-bottom: 0;'>{header}</h2><p>{description}</p></div>", unsafe_allow_html=True)
+    create_link_button(button_label, button_url)
 
-# Blog SEO Helper
-st.subheader("Blog SEO Helper")
-st.write("Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.")
-create_link_button("Use Now - Blog SEO Helper", "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app")
+# Use the updated function to display each tool section
+display_tool_section("Competitive Edge", "Analyze and apply winning SEO strategies from your competitors directly into your campaign.", "Use Now - Competitive Edge", "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app")
 
-# RepuSEO Plagiarism Checker
-st.subheader("RepuSEO Plagiarism Checker")
-st.write("Ensure the originality of your content with our advanced plagiarism detection tool.")
-create_link_button("Use Now - RepuSEO Plagiarism Checker", "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app")
+display_tool_section("Blog SEO Helper", "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.", "Use Now - Blog SEO Helper", "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app")
 
-# RepuSEO-Helper
-st.subheader("RepuSEO-Helper")
-st.write("Receive personalized SEO recommendations to improve your site's ranking and user experience.")
-create_link_button("Use Now - RepuSEO-Helper", "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app")
+display_tool_section("RepuSEO Plagiarism Checker", "Ensure the originality of your content with our advanced plagiarism detection tool.", "Use Now - RepuSEO Plagiarism Checker", "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app")
+
+display_tool_section("RepuSEO-Helper", "Receive personalized SEO recommendations to improve your site's ranking and user experience.", "Use Now - RepuSEO-Helper", "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app")
