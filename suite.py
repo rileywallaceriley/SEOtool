@@ -8,7 +8,7 @@ st.image(logo_url, width=200)
 st.title('SEO Tools Suite')
 
 # Embed YouTube Video
-st.video('https://www.youtube.com/watch?v=XXXXX')
+st.video('https://youtu.be/G6GIb9nwUYE?si=LpLyaIb9JKC9Ya6B')
 
 # Brief overview of your tools
 st.write("""
