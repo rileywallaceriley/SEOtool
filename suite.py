@@ -4,8 +4,7 @@ import streamlit as st
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
 
-# Page Title
-st.title('SEO Tools Suite')
+
 
 # Embed YouTube Video
 st.video('https://youtu.be/G6GIb9nwUYE?si=LpLyaIb9JKC9Ya6B')
