@@ -2,67 +2,89 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import streamlit as st
-import openai
+from openai import OpenAI
 
-# Ensure you have the latest version of the OpenAI library
-# pip install --upgrade openai
-
-openai_api_key = os.getenv("OPENAI_API_KEY")
-if not openai_api_key:
-    st.error("The OPENAI_API_KEY environment variable is not set.")
-    st.stop()
-openai.api_key = openai_api_key
-
-st.image('https://i.ibb.co/VvYtGFg/REPU-11.png', width=200)
+# Display the logo and set the app title
+logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+st.image(logo_url, width=200)
 st.title('Competitive Edge')
 
+# Retrieve the OpenAI API key from environment variables
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
+
+# Create an OpenAI client instance
+client = OpenAI(api_key=openai_api_key)
+
+# Function to scrape content, meta title, meta description, and keywords from a URL
 def scrape_competitor_data(url):
-    """Scrape the title and meta description from a given URL."""
     try:
         response = requests.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
-        title = soup.title.text if soup.title else 'No title found'
+        
+        # Extracting meta title, description, and keywords
+        title_tag = soup.title.text if soup.title else 'Title not found'
         meta_description = soup.find('meta', attrs={'name': 'description'})
         meta_description_content = meta_description['content'] if meta_description else 'No meta description provided'
-        return {'url': url, 'title': title, 'meta_description': meta_description_content}
+        meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
+        meta_keywords_content = meta_keywords['content'] if meta_keywords else 'No keywords provided'
+        
+        # Extracting main content for broader analysis
+        content_sections = [soup.find(tag).text for tag in ['main', 'article', 'section'] if soup.find(tag)]
+        main_content = ' '.join(content_sections).replace('\n', ' ') if content_sections else 'Main content not found'
+        
+        return {
+            'url': url,
+            'title': title_tag,
+            'meta_description': meta_description_content,
+            'meta_keywords': meta_keywords_content,
+            'content': main_content
+        }
     except Exception as e:
-        return {'url': url, 'error': str(e)}
+        st.error(f"Failed to scrape content: {str(e)}")
+        return None
 
-def generate_seo_recommendations(content, url, engine='gpt-4'):
-    """Generate SEO recommendations using GPT-4 based on provided content and URL."""
-    prompt = f"Based on the following content from {url}, provide detailed SEO recommendations:\nContent: {content[:500]}..."
+# Function to generate SEO analysis and recommendations using OpenAI
+def generate_seo_analysis_and_recommendations(user_data, competitor_data):
+    analysis_prompt = "Based on the following data, analyze the SEO strategies of the competitors, including meta information and overall content. Highlight what makes their strategies effective and offer detailed, clear, actionable recommendations for improvement. Use headers, bullet points, and provide specific examples.\n\n"
+    
+    if user_data:
+        analysis_prompt += f"User's Website Meta Title: {user_data['title']}\nUser's Meta Description: {user_data['meta_description']}\nUser's Meta Keywords: {user_data['meta_keywords']}\nUser's Main Content: {user_data['content']}\n\n"
+    
+    for data in competitor_data:
+        if data:
+            analysis_prompt += f"Competitor's URL: {data['url']}\nCompetitor's Meta Title: {data['title']}\nCompetitor's Meta Description: {data['meta_description']}\nCompetitor's Meta Keywords: {data['meta_keywords']}\nCompetitor's Main Content: {data['content']}\n\n"
+
     try:
-        with st.spinner('Generating SEO recommendations...'):
-            response = openai.Completion.create(
-                model=engine,
-                prompt=prompt,
-                temperature=0.7,
-                max_tokens=1024,
-                top_p=1.0,
-                frequency_penalty=0.0,
-                presence_penalty=0.0
+        with st.spinner('Analyzing competitors...'):
+            completion = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are an AI trained in advanced SEO, content optimization, and competitive analysis."},
+                    {"role": "user", "content": analysis_prompt}
+                ]
             )
-            return response.choices[0].text.strip()
+            recommendations = completion.choices[0].message.content
+            return recommendations
     except Exception as e:
-        return f"An error occurred while generating recommendations: {str(e)}"
+        st.error(f"An error occurred: {str(e)}")
+        return "An error occurred while generating recommendations."
 
+# UI for input fields
 user_url = st.text_input('Enter your website URL:')
 competitor_urls_input = st.text_area('Enter competitor URLs (comma-separated):')
 
+# Button to trigger analysis
 if st.button('Analyze Competitors'):
-    if not competitor_urls_input:
-        st.warning('Please enter at least one competitor URL.')
-    else:
+    if competitor_urls_input:
         competitor_urls = [url.strip() for url in competitor_urls_input.split(',')]
-        analysis_results = []
-        for url in competitor_urls:
-            data = scrape_competitor_data(url)
-            if 'error' not in data:
-                recommendations = generate_seo_recommendations(data['meta_description'], data['url'], engine='gpt-4')
-                analysis_results.append((data['url'], recommendations))
-            else:
-                analysis_results.append((url, "Failed to analyze this URL."))
-
-        for url, recommendations in analysis_results:
-            st.subheader(f"SEO Recommendations for {url}:")
-            st.write(recommendations)
+        competitor_data = [scrape_competitor_data(url) for url in competitor_urls]
+        user_data = scrape_competitor_data(user_url) if user_url else None
+        
+        recommendations = generate_seo_analysis_and_recommendations(user_data, competitor_data)
+        
+        st.subheader('Comprehensive SEO Recommendations:')
+        st.markdown(recommendations)
+    else:
+        st.warning('Please enter at least one competitor URL.')
