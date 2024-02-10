@@ -1,20 +1,14 @@
 import streamlit as st
 
-# Center the logo using Markdown and HTML
-st.markdown(
-    f"""
-    <div style="text-align: center;">
-        <img src="{logo_url}" width="200">
-    </div>
-    """, 
-    unsafe_allow_html=True
-)
+# Display the logo
+logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+st.image(logo_url, width=200)
 
 # Add space after the logo
 st.write("\n\n")  # Adds extra space after the logo
 
 # Embed YouTube Video
-st.video('https://youtu.be/G6GIb9nwUYE?si=VjEbDWpdwd1hfUVY')
+st.video('https://www.youtube.com/watch?v=XXXXX')
 
 # Brief overview of your tools, centered
 st.markdown("""
