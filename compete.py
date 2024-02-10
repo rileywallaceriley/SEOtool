@@ -4,70 +4,68 @@ from bs4 import BeautifulSoup
 import streamlit as st
 from openai import OpenAI
 
-# Display the logo and set up the app title
-logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
-st.image(logo_url, width=200)
-st.title('Competitive Edge')
-
-# Retrieve the OpenAI API key from environment variables
+# Initialize the OpenAI client with your API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
-    raise ValueError("The OPENAI_API_KEY environment variable is not set.")
-
-# Create an OpenAI client instance
+    st.error("The OPENAI_API_KEY environment variable is not set.")
+    st.stop()
 client = OpenAI(api_key=openai_api_key)
 
+# Display the logo and app title at the top of the UI
+st.image('https://i.ibb.co/VvYtGFg/REPU-11.png', width=200)
+st.title('Competitive Edge')
+
 def scrape_competitor_data(url):
-    """Scrape content, meta title, meta description, and keywords from a URL."""
-    # Scrape logic as previously defined, unchanged
+    """Scrape the title and meta description from a given URL."""
+    try:
+        response = requests.get(url)
+        if response.status_code != 200:
+            return {'url': url, 'error': 'Failed to fetch content'}
+        soup = BeautifulSoup(response.content, "html.parser")
+        title = soup.title.text if soup.title else 'No title found'
+        meta_description = soup.find('meta', attrs={'name': 'description'})
+        meta_description_content = meta_description['content'] if meta_description else 'No meta description provided'
+        return {
+            'url': url,
+            'title': title,
+            'meta_description': meta_description_content,
+        }
+    except Exception as e:
+        return {'url': url, 'error': str(e)}
 
-def generate_seo_recommendations(content, ranking, url, engine='gpt-4', purpose='seo-analysis'):
-    """
-    Generates SEO recommendations using GPT-4 based on provided content, its ranking, and the URL.
-    """
-    content_preview = (content[:500] + '...') if len(content) > 500 else content
-    prompt = f"Analyze the SEO strategy based on the content: '{content_preview}' from the URL: {url}. Provide detailed, actionable SEO recommendations:"
-
+def generate_seo_recommendations(engine='gpt-4', prompt='Analyze the following SEO strategy:'):
+    """Generate SEO recommendations using GPT-4 based on a given prompt."""
     try:
         with st.spinner('Generating SEO recommendations...'):
-            completion = client.completions.create(
+            response = client.completions.create(
                 model=engine,
                 prompt=prompt,
                 temperature=0.5,
                 max_tokens=1024,
-                top_p=1.0,
-                frequency_penalty=0.0,
-                presence_penalty=0.0
             )
-            recommendations = completion.choices[0].text.strip()
-            return recommendations
+            return response.choices[0].text.strip()
     except Exception as e:
-        st.error(f"An error occurred while generating recommendations: {str(e)}")
-        return "An error occurred while generating recommendations."
+        return f"An error occurred while generating recommendations: {str(e)}"
 
-# UI for input fields
+# Streamlit UI for collecting user and competitor URLs
 user_url = st.text_input('Enter your website URL:')
 competitor_urls_input = st.text_area('Enter competitor URLs (comma-separated):')
 
-# Button to trigger analysis
 if st.button('Analyze Competitors'):
-    if competitor_urls_input:
-        competitor_urls = [url.strip() for url in competitor_urls_input.split(',')]
-        competitor_data = [scrape_competitor_data(url) for url in competitor_urls if url]
-        user_data = scrape_competitor_data(user_url) if user_url else None
-        
-        # Example of using the generate_seo_recommendations function
-        # Here, you would loop through competitor_data (and possibly include user_data)
-        # to generate recommendations for each. Simplified for demonstration:
-        if competitor_data:
-            for data in competitor_data:
-                if data:
-                    recommendations = generate_seo_recommendations(data['content'], "example ranking", data['url'])
-                    st.subheader(f"SEO Recommendations for {data['url']}:")
-                    st.write(recommendations)
-        if user_data:
-            user_recommendations = generate_seo_recommendations(user_data['content'], "your site ranking", user_url, purpose='seo-improvement')
-            st.subheader("Your Website's SEO Recommendations:")
-            st.write(user_recommendations)
-    else:
+    if not competitor_urls_input:
         st.warning('Please enter at least one competitor URL.')
+    else:
+        competitor_urls = [url.strip() for url in competitor_urls_input.split(',')]
+        analysis_results = []
+        for url in competitor_urls:
+            data = scrape_competitor_data(url)
+            if 'error' not in data:
+                prompt = f"URL: {data['url']}\nTitle: {data['title']}\nMeta Description: {data['meta_description']}\n\nProvide SEO recommendations:"
+                recommendations = generate_seo_recommendations(prompt=prompt)
+                analysis_results.append((data['url'], recommendations))
+            else:
+                analysis_results.append((url, "Failed to analyze this URL."))
+
+        for url, recommendations in analysis_results:
+            st.subheader(f"SEO Recommendations for {url}:")
+            st.write(recommendations)
