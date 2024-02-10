@@ -8,7 +8,7 @@ st.image(logo_url, width=200)
 st.write("\n\n")  # Adds extra space after the logo
 
 # Embed YouTube Video
-st.video('https://www.youtube.com/watch?v=XXXXX')
+st.video('https://youtu.be/G6GIb9nwUYE?si=kUrABMKxnwtoKO-M')
 
 # Brief overview of your tools, centered
 st.markdown("""
