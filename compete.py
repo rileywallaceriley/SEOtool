@@ -47,7 +47,7 @@ def scrape_competitor_data(url):
 
 # Function to generate SEO analysis and recommendations using OpenAI
 def generate_seo_analysis_and_recommendations(user_data, competitor_data):
-    analysis_prompt = "Based on the following data, analyze the SEO strategies of the competitors, including meta information and overall content. Highlight what makes their strategies effective and offer detailed, clear, actionable recommendations for improvement. Use headers, bullet points, and provide specific examples.\n\n"
+    analysis_prompt = "Based on the following data, analyze the SEO strategies of the competitors, including meta information and overall content. Highlight what makes their strategies effective and offer detailed, clear, actionable recommendations for improvement; the recommendations should be specific; never make a recommendation that is general in nature, they should include very specific points tailored to the actual user site. Use headers, bullet points, and provide specific examples.\n\n"
     
     if user_data:
         analysis_prompt += f"User's Website Meta Title: {user_data['title']}\nUser's Meta Description: {user_data['meta_description']}\nUser's Meta Keywords: {user_data['meta_keywords']}\nUser's Main Content: {user_data['content']}\n\n"
