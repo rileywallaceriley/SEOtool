@@ -1,9 +1,5 @@
 import streamlit as st
 
-# Display the logo and video
-logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
-st.image(logo_url, width=200)
-st.video('https://youtu.be/G6GIb9nwUYE?si=kUrABMKxnwtoKO-M')
 
 # Display the logo and video
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
