@@ -36,7 +36,7 @@ tools = [
         "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
         "button_label": "Use Now - RepuSEO-Helper",
         "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-    }
+    },
     {
         "header": "Competitive Edge",
         "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
