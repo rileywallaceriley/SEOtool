@@ -1,40 +1,33 @@
 import streamlit as st
 
-# Display the logo
+# Display the logo and video
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
-
-# Embed YouTube Video
 st.video('https://youtu.be/G6GIb9nwUYE?si=kUrABMKxnwtoKO-M')
 
-# Brief overview of your tools, centered
+# Brief overview
 st.markdown("""
 <div style="text-align: center;">
     <h2>Elevate Your SEO Game</h2>
-    <p>Unlock the full potential of your website with our SEO Tools Suite. We take the complexity out of SEO, making it accessible and actionable for everyone. Whether you're a small business owner, a solo entrepreneur, or a content creator, our tools are designed to give you clear, straightforward recommendations that drive results. Improve your search engine rankings, learn from your competition, and make SEO work for you.<br><br></p>
+    <p>Unlock the full potential of your website with our SEO Tools Suite...</p>
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown("---")
 
-# Define the function to display the tool section with description
+# Define a function to display each tool section with a description and a button
 def display_tool_section(header, description, button_label, button_url):
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.markdown(f"""
-        <div style="text-align: center;">
-            <h2>{header}</h2>
-            <p>{description}</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown(f"""
-        <a href="{button_url}" target="_blank">
-            <button style='width: 100%; height: 50px; padding: 10px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>
-                {button_label}
-            </button>
-        </a>
-        """, unsafe_allow_html=True)
+    # Using columns to create a layout for the description and button
+    with st.container():
+        st.markdown(f"#### {header}")
+        st.markdown(description)
+        
+        # Button
+        button_html = f"""<a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: 100%; padding: 10px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a>"""
+        st.markdown(button_html, unsafe_allow_html=True)
+        
+        # Divider
+        st.markdown("---")
 
 # Tool descriptions
 tools = [
