@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 from openai import OpenAI
 
 # Display the logo at the top of the app
-logo_url = 'https://i.ibb.co/JHrXTjz/REPU-03.png'
-st.image(logo_url, width=200)  # Adjust the width as needed
+logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+st.image(logo_url, width=200)
 
 st.title('RepuSEO-Helper')
 
@@ -18,9 +18,7 @@ if not openai_api_key:
 # Create an OpenAI client instance
 client = OpenAI(api_key=openai_api_key)
 
-google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
-google_cse_id = '34200d9d3c6084a1f'
-
+# Define your Google API key and CSE ID here
 google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
 google_cse_id = '34200d9d3c6084a1f'
 
@@ -49,26 +47,43 @@ def scrape_content(url):
     # Ensure the URL starts with http:// or https://
     if not url.startswith(('http://', 'https://')):
         url = 'http://' + url
-
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
     content = soup.find('main').text if soup.find('main') else 'Main content not found'
     return content
-
-def get_load_speed(url):
-    pagespeed_url = f'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={url}&key={google_api_key}'
-    response = requests.get(pagespeed_url)
-    result = response.json()
     
-    # Parse the result as needed, for example:
-    speed_score = result.get('lighthouseResult', {}).get('categories', {}).get('performance', {}).get('score')
-    if speed_score:
-        speed_score = speed_score * 100  # Convert to percentage
-    else:
-        speed_score = 'Load speed score not available'
-    return speed_score
+def generate_meta_content(content, keyword):
+    # Use OpenAI's GPT model to generate meta content
+    prompt = f"Write a compelling meta description for a webpage about '{keyword}', using the following content: {content}."
+    try:
+        completion = client.completions.create(prompt=prompt, max_tokens=60)
+        return completion.choices[0].text.strip()
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
-def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo', purpose='general'):
+def generate_pillar_content(content, keyword, url):
+    # Use OpenAI's GPT model to generate a blog post
+    prompt = f"Write a 250-word blog post optimized for SEO about '{keyword}', using the following context: {content}. Include a link to {url}."
+    try:
+        completion = client.completions.create(prompt=prompt, max_tokens=300)
+        return completion.choices[0].text.strip()
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+def analyze_keywords(content, keyword):
+    # Placeholder for keyword analysis functionality
+    # You should integrate with an API or library to get keyword suggestions and competition data
+    # Example:
+    # keyword_suggestions = get_keyword_suggestions(content)
+    # keyword_competition = get_keyword_competition(keyword)
+
+    # Temporary code to avoid the error, remove or replace with actual logic
+    keyword_suggestions = ['suggestion1', 'suggestion2']  # Replace with actual logic
+    keyword_competition = {'suggestion1': 'low', 'suggestion2': 'high'}  # Replace with actual logic
+
+    return keyword_suggestions, keyword_competition
+
+def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     
     # Modify the prompt based on the purpose
@@ -101,53 +116,61 @@ def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo', purpose='
         return completion.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}"
+        
 
-# Streamlit UI
+# Streamlit UI for input fields
 url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
 location = st.text_input('Enter your location (e.g., "New York, USA") here:')
 
-if st.button('Analyze'):
-    if url and keyword and location:
-        with st.spinner('Analyzing...'):
-            ranking = get_google_search_results(keyword, url, location)
-            content = scrape_content(url)
-            load_speed_score = get_load_speed(url)
-            recommendations = get_recommendations(content, ranking, url)
-        
-        if ranking is not None and ranking <= 50:
-            st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
-        elif ranking is None:
-            st.write('Your site was not found in the top 50 results.')
-        
-        # Display the SEO recommendations and load speed
-        st.subheader('SEO Recommendations:')
-        st.write(recommendations)
-        
-        st.subheader('Page Load Speed Score:')
-        st.write(f'Load Speed Score (out of 100): {load_speed_score}')
-        
-        # Action buttons for further SEO enhancements
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            if st.button('Refresh Meta'):
-                with st.spinner('Refreshing meta description...'):
-                    meta_description = get_recommendations(content, ranking, url, purpose='refresh_meta')
-                    st.write('Refreshed Meta Description:')
-                    st.write(meta_description)
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    if st.button('Analyze'):
+        if url and keyword and location:
+            with st.spinner('Analyzing...'):
+                # Existing analyze functionality
+                ranking = get_google_search_results(keyword, url, location)
+                content = scrape_content(url)
+                recommendations = get_recommendations(content, ranking, url)
+                
+                if ranking is not None and ranking <= 50:
+                    st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
+                else:
+                    st.write('Your site was not found in the top 50 results.')
+                
+                st.subheader('SEO Recommendations:')
+                st.write(recommendations)
+                
+        else:
+            st.warning('Please enter a URL, a keyword, and a location.')
 
-        with col2:
-            if st.button('Refresh Main Copy'):
-                with st.spinner('Refreshing main copy...'):
-                    main_copy_updates = get_recommendations(content, ranking, url, purpose='refresh_main_copy')
-                    st.write('Refreshed Main Copy Updates:')
-                    st.write(main_copy_updates)
+with col2:
+    if st.button('Keywords'):
+        if url and keyword:
+            with st.spinner('Analyzing Keywords...'):
+                content = scrape_content(url)
+                keyword_suggestions, keyword_competition = analyze_keywords(content, keyword)
+                st.write('Keyword Suggestions:', keyword_suggestions)
+                st.write('Keyword Competition Data:', keyword_competition)
+        else:
+            st.warning('Please enter a URL and a keyword.')
 
-        with col3:
-            if st.button('Write Seeder Post'):
-                with st.spinner('Generating seeder post...'):
-                    seeder_post = get_recommendations(content, ranking, url, purpose='write_seeder_post')
-                    st.write('Seeder Post (300 words):')
-                    st.write(seeder_post)
-    else:
-        st.warning('Please enter a URL, a keyword, and a location.')
+with col3:
+    if st.button('Pillar'):
+        if url and keyword:
+            with st.spinner('Generating Pillar Page Content...'):
+                content = scrape_content(url)
+                pillar_content = generate_pillar_content(content, keyword, url)
+                st.text_area('Pillar Page Content:', pillar_content)
+        else:
+            st.warning('Please enter a URL and a keyword.')
+
+with col4:
+    if st.button('Meta'):
+        if url and keyword:
+            with st.spinner('Generating Meta Content...'):
+                content = scrape_content(url)
+                meta_content = generate_meta_content(content, keyword)
+                st.text_area('Meta Description:', meta_content)
+        else:
+            st.warning('Please enter a URL and a keyword.')
