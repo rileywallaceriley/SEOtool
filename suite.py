@@ -64,4 +64,4 @@ for tool in tools:
 # Attempt to make the bottom image responsive
 left_column, image_column, right_column = st.columns([1, 10, 1])
 with image_column:
-    st.image("https://i.ibb.co/pxcB74N/Analysis.png", caption="SEO Analysis")
+    st.image("https://i.ibb.co/pxcB74N/Analysis.png")
