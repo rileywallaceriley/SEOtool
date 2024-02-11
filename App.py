@@ -5,18 +5,10 @@ from bs4 import BeautifulSoup
 from openai import OpenAI
 
 # Display the logo at the top of the app
-logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+logo_url = 'https://i.ibb.co/JHrXTjz/REPU-03.png'
 st.image(logo_url, width=200)  # Adjust the width as needed
 
 st.title('RepuSEO-Helper')
-
-# Initialize session states for button presses
-if 'meta_pressed' not in st.session_state:
-    st.session_state['meta_pressed'] = False
-if 'main_copy_pressed' not in st.session_state:
-    st.session_state['main_copy_pressed'] = False
-if 'seeder_pressed' not in st.session_state:
-    st.session_state['seeder_pressed'] = False
 
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -76,7 +68,7 @@ def get_load_speed(url):
         speed_score = 'Load speed score not available'
     return speed_score
 
-def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'):
+def get_recommendations(content, ranking, url, engine='gpt-3.5-turbo', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     
     # Modify the prompt based on the purpose
@@ -110,7 +102,7 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-# Streamlit UI for input fields
+# Streamlit UI
 url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
 location = st.text_input('Enter your location (e.g., "New York, USA") here:')
@@ -138,30 +130,24 @@ if st.button('Analyze'):
         # Action buttons for further SEO enhancements
         col1, col2, col3 = st.columns(3)
         with col1:
-            if not st.session_state['meta_pressed']:
-                if st.button('Refresh Meta'):
-                    st.session_state['meta_pressed'] = True
-                    with st.spinner('Refreshing meta description...'):
-                        meta_description = get_recommendations(content, ranking, url, purpose='refresh_meta')
-                        st.write('Refreshed Meta Description:')
-                        st.write(meta_description)
+            if st.button('Refresh Meta'):
+                with st.spinner('Refreshing meta description...'):
+                    meta_description = get_recommendations(content, ranking, url, purpose='refresh_meta')
+                    st.write('Refreshed Meta Description:')
+                    st.write(meta_description)
 
         with col2:
-            if not st.session_state['main_copy_pressed']:
-                if st.button('Refresh Main Copy'):
-                    st.session_state['main_copy_pressed'] = True
-                    with st.spinner('Refreshing main copy...'):
-                        main_copy_updates = get_recommendations(content, ranking, url, purpose='refresh_main_copy')
-                        st.write('Refreshed Main Copy Updates:')
-                        st.write(main_copy_updates)
+            if st.button('Refresh Main Copy'):
+                with st.spinner('Refreshing main copy...'):
+                    main_copy_updates = get_recommendations(content, ranking, url, purpose='refresh_main_copy')
+                    st.write('Refreshed Main Copy Updates:')
+                    st.write(main_copy_updates)
 
         with col3:
-            if not st.session_state['seeder_pressed']:
-                if st.button('Write Seeder Post'):
-                    st.session_state['seeder_pressed'] = True
-                    with st.spinner('Generating seeder post...'):
-                        seeder_post = get_recommendations(content, ranking, url, purpose='write_seeder_post')
-                        st.write('Seeder Post (300 words):')
-                        st.write(seeder_post)
+            if st.button('Write Seeder Post'):
+                with st.spinner('Generating seeder post...'):
+                    seeder_post = get_recommendations(content, ranking, url, purpose='write_seeder_post')
+                    st.write('Seeder Post (300 words):')
+                    st.write(seeder_post)
     else:
         st.warning('Please enter a URL, a keyword, and a location.')
