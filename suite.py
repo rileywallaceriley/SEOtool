@@ -61,5 +61,7 @@ tools = [
 for tool in tools:
     display_tool_section(tool["header"], tool["description"], tool["button_label"], tool["button_url"])
 
-# Add the SEO Analysis image at the bottom
-st.image("https://i.ibb.co/pxcB74N/Analysis.png", width=100%)
+# Attempt to make the bottom image responsive
+left_column, image_column, right_column = st.columns([1, 10, 1])
+with image_column:
+    st.image("https://i.ibb.co/pxcB74N/Analysis.png", caption="SEO Analysis")
