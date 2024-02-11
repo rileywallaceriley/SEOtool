@@ -1,30 +1,26 @@
 import streamlit as st
 
-# Define your password and the URL to redirect to
 PASSWORD = 'repuseo'
-REDIRECT_URL = 'https://seotool-b2twwogtwjgwvlpsuvevcu.streamlit.app'
 
-# Redirect function using JavaScript
-def redirect(url):
-    js = f"window.location.href = '{url}'"  # JavaScript for redirection
-    st.markdown(f'<img src onerror="{js}">', unsafe_allow_html=True)
+def show_protected_content():
+    """
+    Function to show the protected content or display a link to redirect.
+    """
+    # Display the content or redirect link
+    st.markdown("### Access Granted")
+    st.markdown("Click the link below to proceed:")
+    st.markdown(f"[Go to Dashboard](https://seotool-b2twwogtwjgwvlpsuvevcu.streamlit.app/)", unsafe_allow_html=True)
 
-# Main app
 def main():
     st.title("Protected Access")
-    
-    with st.container():
-        # Centering the password input by using columns
-        col1, col2, col3 = st.columns([1, 2, 1])
 
-        with col2:
-            password_input = st.text_input("Password", type="password")
+    password_input = st.text_input("Enter Password", type="password")
 
-            if st.button("Login"):
-                if password_input == PASSWORD:
-                    redirect(REDIRECT_URL)
-                else:
-                    st.error("Incorrect password, please try again.")
+    if st.button("Login"):
+        if password_input == PASSWORD:
+            show_protected_content()
+        else:
+            st.error("Incorrect password, please try again.")
 
 if __name__ == "__main__":
     main()
