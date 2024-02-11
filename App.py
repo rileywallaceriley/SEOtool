@@ -144,33 +144,3 @@ with col1:
         else:
             st.warning('Please enter a URL, a keyword, and a location.')
 
-with col2:
-    if st.button('Keywords'):
-        if url and keyword:
-            with st.spinner('Analyzing Keywords...'):
-                content = scrape_content(url)
-                keyword_suggestions, keyword_competition = analyze_keywords(content, keyword)
-                st.write('Keyword Suggestions:', keyword_suggestions)
-                st.write('Keyword Competition Data:', keyword_competition)
-        else:
-            st.warning('Please enter a URL and a keyword.')
-
-with col3:
-    if st.button('Pillar'):
-        if url and keyword:
-            with st.spinner('Generating Pillar Page Content...'):
-                content = scrape_content(url)
-                pillar_content = generate_pillar_content(content, keyword, url)
-                st.text_area('Pillar Page Content:', pillar_content)
-        else:
-            st.warning('Please enter a URL and a keyword.')
-
-with col4:
-    if st.button('Meta'):
-        if url and keyword:
-            with st.spinner('Generating Meta Content...'):
-                content = scrape_content(url)
-                meta_content = generate_meta_content(content, keyword)
-                st.text_area('Meta Description:', meta_content)
-        else:
-            st.warning('Please enter a URL and a keyword.')
