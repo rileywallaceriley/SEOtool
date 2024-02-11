@@ -15,15 +15,15 @@ st.markdown("""
 
 st.markdown("---")
 
-# Define a function to display each tool section with a description and a button
+# Define a function to display each tool section with centered title and description
 def display_tool_section(header, description, button_label, button_url):
-    # Using columns to create a layout for the description and button
     with st.container():
-        st.markdown(f"#### {header}")
-        st.markdown(description)
+        # Use HTML to center the header and description
+        st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
         
-        # Button
-        button_html = f"""<a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: 100%; padding: 10px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a>"""
+        # Centered button with HTML
+        button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
         st.markdown(button_html, unsafe_allow_html=True)
         
         # Divider
