@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Define your password and the URL to redirect to
-PASSWORD = 'SecretPassword'
+PASSWORD = 'repuseo'
 REDIRECT_URL = 'https://seotool-b2twwogtwjgwvlpsuvevcu.streamlit.app'
 
 # Redirect function using JavaScript
