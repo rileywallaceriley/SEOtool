@@ -32,6 +32,12 @@ def display_tool_section(header, description, button_label, button_url):
 # Tool descriptions
 tools = [
     {
+        "header": "RepuSEO-Helper",
+        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
+        "button_label": "Use Now - RepuSEO-Helper",
+        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
+    }
+    {
         "header": "Competitive Edge",
         "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
         "button_label": "Use Now - Competitive Edge",
@@ -49,12 +55,7 @@ tools = [
         "button_label": "Use Now - RepuSEO Plagiarism Checker",
         "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
     },
-    {
-        "header": "RepuSEO-Helper",
-        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-        "button_label": "Use Now - RepuSEO-Helper",
-        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-    }
+    
 ]
 
 # Loop through each tool and display its section
