@@ -25,7 +25,7 @@ client = OpenAI(api_key=openai_api_key)
 # Streamlit UI for input fields
 blog_topic = st.text_input('Enter the blog topic here:')
 main_keywords = st.text_input('Enter the main keywords (comma-separated) here:')
-blog_length = st.number_input('Enter the desired blog length (number of words):', min_value=300, max_value=3000, value=1000)
+blog_length = st.number_input('Enter the desired blog length (number of words):', min_value=150, max_value=3000, value=1000)
 
 def generate_blog_post(topic, keywords, length):
     # Generate a prompt that instructs the AI to write an SEO-rich blog post
