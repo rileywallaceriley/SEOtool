@@ -1,5 +1,28 @@
 import streamlit as st
 
+# Define a password
+PASSWORD = "repurocket@@"
+
+# Initialize session state for password verification
+if 'password_verified' not in st.session_state:
+    st.session_state['password_verified'] = False
+
+# Function to check password
+def check_password():
+    if st.session_state.password_input == PASSWORD:
+        st.session_state['password_verified'] = True
+    else:
+        st.error("Incorrect password, please try again.")
+
+# Create a password input if not verified
+if not st.session_state['password_verified']:
+    st.session_state.password_input = st.text_input("Enter the password:", type="password", on_change=check_password)
+else:
+    # Display the logo and video after password verification
+    logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+    st.image(logo_url, width=200)
+    st.video('https://youtu.be/G6GIb9nwUYE?si=kUrABMKxnwtoKO-M')
+
 # Display the logo and video
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
