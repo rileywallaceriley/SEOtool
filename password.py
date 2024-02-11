@@ -1,41 +1,30 @@
 import streamlit as st
 
-# Define your password here
-PASSWORD = 'repuseo'
+# Define your password and the URL to redirect to
+PASSWORD = 'SecretPassword'
 REDIRECT_URL = 'https://seotool-b2twwogtwjgwvlpsuvevcu.streamlit.app'
 
-# Function to redirect to the specified URL
+# Redirect function using JavaScript
 def redirect(url):
-    js = f"<script>window.location.href='{url}';</script>"
-    st.markdown(js, unsafe_allow_html=True)
+    js = f"window.location.href = '{url}'"  # JavaScript for redirection
+    st.markdown(f'<img src onerror="{js}">', unsafe_allow_html=True)
 
-# Function to check password
-def check_password(password):
-    if password == PASSWORD:
-        redirect(REDIRECT_URL)
-    else:
-        st.error("Incorrect password, please try again.")
-
-# Use columns to horizontally center the login box
-col1, col2, col3 = st.columns([1, 2, 1])
-
-with col2:
-    # Use a container to add some vertical space before the login box
+# Main app
+def main():
+    st.title("Protected Access")
+    
     with st.container():
-        # Calculate the space needed to center the content vertically
-        _, row2, _ = st.columns([1, 6, 1])
+        # Centering the password input by using columns
+        col1, col2, col3 = st.columns([1, 2, 1])
 
-        with row2:
-            st.write("")  # This could be used to add vertical space
+        with col2:
+            password_input = st.text_input("Password", type="password")
 
-        st.title("Protected Access")
+            if st.button("Login"):
+                if password_input == PASSWORD:
+                    redirect(REDIRECT_URL)
+                else:
+                    st.error("Incorrect password, please try again.")
 
-        # Collect password input
-        password_input = st.text_input("Password", type="password", key="password")
-
-        # Orange login button
-        if st.button("Login", key="login"):
-            check_password(password_input)
-
-# Note: Streamlit doesn't currently support precise vertical centering out of the box,
-# so this approach uses spacers and relative sizing to approximate it.
+if __name__ == "__main__":
+    main()
