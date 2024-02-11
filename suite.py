@@ -9,7 +9,7 @@ st.video('https://youtu.be/G6GIb9nwUYE?si=kUrABMKxnwtoKO-M')
 st.markdown("""
 <div style="text-align: center;">
     <h2>SEO? Easy peasy with RepuRocket!</h2>
-    <p>RepuRocket makes SEO a breeze! Think of us as your friendly neighborhood SEO buddy, here to help you climb those Google ranks without the headache. With a few simple clicks, you can discover the right keywords, peek at what your competitors are up to, and get easy tips that actually work.</p><p>No more SEO jargon or confusion. Just clear, straightforward advice to boost your site. Join RepuRocket, and let’s make your website shine together.</p>
+    <p>RepuRocket makes SEO a breeze! Think of us as your friendly neighborhood SEO buddy, here to help you climb those Google ranks without the headache. With a few simple clicks, you can discover the right keywords, peek at what your competitors are up to, and get easy tips that actually work.</p><p>No more SEO jargon or confusion. <strong>Just clear, straightforward advice to boost your site</strong>. Join RepuRocket, and let’s make your website shine together.</p>
 </div>
 """, unsafe_allow_html=True)
 
