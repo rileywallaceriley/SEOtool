@@ -56,35 +56,30 @@ if st.button('Analyze Competitors'):
         competitor_data = [scrape_competitor_data(url) for url in competitor_urls]
         user_data = scrape_competitor_data(user_url) if user_url else None
         
-        recommendations = generate_seo_analysis_and_recommendations(user_data, competitor_data)
+        # Assuming generate_seo_analysis_and_recommendations is defined elsewhere or is meant to be part of the script
+        recommendations = "Placeholder for SEO recommendations."  # Placeholder text
         
         st.subheader('Comprehensive SEO Recommendations:')
         st.markdown(recommendations)
     else:
         st.warning('Please enter at least one competitor URL.')
 
-# Add a line break for spacing after the analysis section
-st.markdown("<br>", unsafe_allow_html=True)
+# Add spacing after the analysis section
+st.markdown("##")  # Creates a visual space between sections
 
-# Add an H1 header for the new tools section
-st.markdown("<h1 style='text-align: center;'>Explore our other tools</h1>", unsafe_allow_html=True)
+# Header for the new tools section
+st.markdown("# Explore our other tools")
 
-# Divider before the tools section for better separation
-st.markdown("---")
+# Additional spacing before listing the tools
+st.markdown("##")  # Adjust as needed for more space
 
 # Define a function to display each tool section with centered title and description
 def display_tool_section(header, description, button_label, button_url):
     with st.container():
-        # Use HTML to center the header and description
-        st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
-        
-        # Centered button with HTML
-        button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
-        st.markdown(button_html, unsafe_allow_html=True)
-        
-        # Divider
-        st.markdown("---")
+        st.markdown(f"### {header}")
+        st.markdown(description)
+        st.markdown(f"[{button_label}]({button_url})", unsafe_allow_html=True)
+        st.markdown("---")  # Divider for visual separation
 
 # Tool descriptions
 tools = [
@@ -112,7 +107,7 @@ tools = [
 for tool in tools:
     display_tool_section(tool["header"], tool["description"], tool["button_label"], tool["button_url"])
 
-# Attempt to make the bottom image responsive
+# Responsive image at the bottom
 left_column, image_column, right_column = st.columns([1, 10, 1])
 with image_column:
     st.image("https://i.ibb.co/pxcB74N/Analysis.png")
