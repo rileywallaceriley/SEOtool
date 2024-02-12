@@ -90,9 +90,6 @@ def generate_seo_analysis_and_recommendations(user_data, competitor_data):
 user_url = st.text_input('Enter your website URL:')
 competitor_urls_input = st.text_area('Enter competitor URLs (comma-separated):')
 
-# Divider
-        st.markdown("---")
-
 # Button to trigger analysis
 if st.button('Analyze Competitors'):
     if competitor_urls_input:
