@@ -47,28 +47,22 @@ def scrape_competitor_data(url):
 
 # Function to generate SEO analysis and recommendations using OpenAI
 def generate_seo_analysis_and_recommendations(user_data, competitor_data):
-    analysis_prompt = "Please see the format below; your results should follow that format specifically and never deviate from it. All sections must be filled out as instructed, and all copy earmarked as headers must be used and styled appropriately.  
-
-
-Header: Your competitor's SEO strategy:
-
-[150-word blurb that looks at how the competitor is positioning themselves]
-
-Header: Your competitor's Meta & main copy:
-
-[This section should lay out the meta titles and description as well as the main copy, offering an analysis of what they are doing right, and what needs work]
-
-Header: Your competitor's keywords:
-
-[This section should lay out the keywords they either layout in their meta or, if not available, lay out possible keywords based on their meta and copy]
-
-Header: Roadmap for your SEO
-
-[Lay out what the user's current page is doing right, and what could be changed to better rank based on what the competitor is doing well. This should be specific and include direct examples and recommendations using the user's actual data/copy.]
-
-Header: Your SEO homework
-
-[This section should lay out tasks that will help achieve the improvements mentioned in the 'How you stack up:' header. It should be direct and include logic and explanation that answers 'why' the change should be made while giving specific changes. For example, if suggesting that a user should add regionally specific language, show the user how that could be implemented. \n\n"
+    analysis_prompt = """
+    # Analyze your competitor's SEO strategy:
+    # [Here, you would include a 150-word analysis based on competitor positioning]
+    
+    # Analyze your competitor's Meta & main copy:
+    # [Include meta titles, descriptions, and main copy analysis here]
+    
+    # Identify your competitor's keywords:
+    # [Detail the competitor's keywords from meta tags or content]
+    
+    # Roadmap for your SEO improvements:
+    # [Discuss your page's strengths and suggest improvements based on competitor analysis]
+    
+    # Your SEO homework:
+    # [Outline specific tasks for implementing the suggested improvements]
+    """ \n\n"
     
     if user_data:
         analysis_prompt += f"User's Website Meta Title: {user_data['title']}\nUser's Meta Description: {user_data['meta_description']}\nUser's Meta Keywords: {user_data['meta_keywords']}\nUser's Main Content: {user_data['content']}\n\n"
