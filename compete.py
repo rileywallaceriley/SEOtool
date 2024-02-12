@@ -45,6 +45,47 @@ def scrape_competitor_data(url):
         st.error(f"Failed to scrape content: {str(e)}")
         return None
 
+# Function to generate SEO analysis and recommendations using OpenAI
+def generate_seo_analysis_and_recommendations(user_data, competitor_data):
+    analysis_prompt = """
+    # Analyze your competitor's SEO strategy:
+    # [Here, you would include a 150-word analysis based on competitor positioning]
+    
+    # Analyze your competitor's Meta & main copy:
+    # [Include meta titles, descriptions, and main copy analysis here. be sure to include any potential weaknesses and opportunities for improvement. thsi section should be detailed.]
+    
+    # Identify your competitor's keywords:
+    # [Detail the competitor's keywords from meta tags or content]
+    
+    # Roadmap for your SEO improvements:
+    # [Discuss your page's strengths and suggest improvements based on competitor analysis]
+    
+    # Your SEO homework:
+    # [Outline specific tasks for implementing the suggested improvements. The tasks shoudlnbe detailed and include the users actual content to create engaging personalized recommendations theybcan actually implement. also include a detailed logic as to why the change will help them. Each point should be at least 100 words minimum. please refrain from providing too much general information; keep it specific, personalized and tailored to the user's actual content.]
+    """
+    
+    if user_data:
+        analysis_prompt += f"User's Website Meta Title: {user_data['title']}\nUser's Meta Description: {user_data['meta_description']}\nUser's Meta Keywords: {user_data['meta_keywords']}\nUser's Main Content: {user_data['content']}\n\n"
+    
+    for data in competitor_data:
+        if data:
+            analysis_prompt += f"Competitor's URL: {data['url']}\nCompetitor's Meta Title: {data['title']}\nCompetitor's Meta Description: {data['meta_description']}\nCompetitor's Meta Keywords: {data['meta_keywords']}\nCompetitor's Main Content: {data['content']}\n\n"
+
+    try:
+        with st.spinner('Analyzing competitors...'):
+            completion = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are an AI trained in advanced SEO, content optimization, and competitive analysis."},
+                    {"role": "user", "content": analysis_prompt}
+                ]
+            )
+            recommendations = completion.choices[0].message.content
+            return recommendations
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+        return "An error occurred while generating recommendations."
+
 # UI for input fields
 user_url = st.text_input('Enter your website URL:')
 competitor_urls_input = st.text_area('Enter competitor URLs (comma-separated):')
@@ -56,58 +97,9 @@ if st.button('Analyze Competitors'):
         competitor_data = [scrape_competitor_data(url) for url in competitor_urls]
         user_data = scrape_competitor_data(user_url) if user_url else None
         
-        # Assuming generate_seo_analysis_and_recommendations is defined elsewhere or is meant to be part of the script
-        recommendations = "Placeholder for SEO recommendations."  # Placeholder text
+        recommendations = generate_seo_analysis_and_recommendations(user_data, competitor_data)
         
         st.subheader('Comprehensive SEO Recommendations:')
         st.markdown(recommendations)
     else:
         st.warning('Please enter at least one competitor URL.')
-
-# Add spacing after the analysis section
-st.markdown("##")  # Creates a visual space between sections
-
-# Header for the new tools section
-st.markdown("# Explore our other tools")
-
-# Additional spacing before listing the tools
-st.markdown("##")  # Adjust as needed for more space
-
-# Define a function to display each tool section with centered title and description
-def display_tool_section(header, description, button_label, button_url):
-    with st.container():
-        st.markdown(f"### {header}")
-        st.markdown(description)
-        st.markdown(f"[{button_label}]({button_url})", unsafe_allow_html=True)
-        st.markdown("---")  # Divider for visual separation
-
-# Tool descriptions
-tools = [
-    {
-        "header": "RepuSEO-Helper",
-        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-        "button_label": "Use Now - RepuSEO-Helper",
-        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-    },
-    {
-        "header": "Blog SEO Helper",
-        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
-        "button_label": "Use Now - Blog SEO Helper",
-        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
-    },
-    {
-        "header": "RepuSEO Plagiarism Checker",
-        "description": "Ensure the originality of your content with our advanced plagiarism detection tool.",
-        "button_label": "Use Now - RepuSEO Plagiarism Checker",
-        "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
-    },
-]
-
-# Loop through each tool and display its section
-for tool in tools:
-    display_tool_section(tool["header"], tool["description"], tool["button_label"], tool["button_url"])
-
-# Responsive image at the bottom
-left_column, image_column, right_column = st.columns([1, 10, 1])
-with image_column:
-    st.image("https://i.ibb.co/pxcB74N/Analysis.png")
