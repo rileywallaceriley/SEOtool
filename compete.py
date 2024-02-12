@@ -52,7 +52,7 @@ def generate_seo_analysis_and_recommendations(user_data, competitor_data):
     # [Here, you would include a 150-word analysis based on competitor positioning]
     
     # Analyze your competitor's Meta & main copy:
-    # [Include meta titles, descriptions, and main copy analysis here]
+    # [Include meta titles, descriptions, and main copy analysis here. be sure to include any potential weaknesses and opportunities for improvement. thsi section should be detailed.]
     
     # Identify your competitor's keywords:
     # [Detail the competitor's keywords from meta tags or content]
@@ -61,7 +61,7 @@ def generate_seo_analysis_and_recommendations(user_data, competitor_data):
     # [Discuss your page's strengths and suggest improvements based on competitor analysis]
     
     # Your SEO homework:
-    # [Outline specific tasks for implementing the suggested improvements]
+    # [Outline specific tasks for implementing the suggested improvements. The tasks shoudlnbe detailed and include the users actual content to create engaging personalized recommendations theybcan actually implement. also include a detailed logic as to why the change will help them.]
     """
     
     if user_data:
