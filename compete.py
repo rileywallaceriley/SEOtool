@@ -61,7 +61,7 @@ def generate_seo_analysis_and_recommendations(user_data, competitor_data):
     # [Discuss your page's strengths and suggest improvements based on competitor analysis]
     
     # Your SEO homework:
-    # [Outline specific tasks for implementing the suggested improvements. The tasks shoudlnbe detailed and include the users actual content to create engaging personalized recommendations theybcan actually implement. also include a detailed logic as to why the change will help them.]
+    # [Outline specific tasks for implementing the suggested improvements. The tasks shoudlnbe detailed and include the users actual content to create engaging personalized recommendations theybcan actually implement. also include a detailed logic as to why the change will help them. Each point should be at least 100 words minimum. please refrain from providing too much general information; keep it specific, personalized and tailored to the user's actual content.]
     """
     
     if user_data:
