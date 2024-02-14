@@ -14,6 +14,14 @@ def extract_nouns(description):
     nouns = [word for (word, pos) in pos_tag(words) if pos[:2] == 'NN' and word.lower() not in stop_words]
     return list(set(nouns))
 
+def generate_keywords(nouns, location):
+    """Generates broad, longtail, and local SEO keywords."""
+    broad = nouns[:5]  # Take the first 5 nouns for broad keywords
+    longtail = [f"{noun} services" for noun in nouns[:3]] + [f"best {noun}" for noun in nouns[3:5]]  # Generate longtail keywords
+    local = [f"{noun} near {location}" for noun in nouns[:2]] + [f"{noun} in {location}" for noun in nouns[2:4]]  # Generate local SEO keywords
+    
+    return broad, longtail, local
+
 def format_keyword_insights(description, location, broad, longtail, local):
     """Formats insights with detailed logic and keyword lists."""
     broad_keywords_formatted = "\n".join(f"- {keyword}" for keyword in broad)
@@ -27,20 +35,19 @@ def format_keyword_insights(description, location, broad, longtail, local):
 - Location: {location}
 
 #### Broad Keywords
-- {broad_keywords_formatted}
+{broad_keywords_formatted}
 
-**Insight**: Broad keywords are the pillars of your SEO strategy, providing a foundation that helps you capture a wide audience. They are crucial for creating a strong initial impression in search engines, though they can be highly competitive. By strategically using broad keywords, businesses can improve their visibility for general topics, which is essential for attracting a diverse audience. However, balancing these with more specific keywords is key to targeting the right customers.
+**Insight**: Broad keywords are essential for capturing a wide audience and establishing your presence in a broad market. These keywords help in building brand awareness and are the foundation of any SEO strategy, though they tend to be highly competitive.
 
 #### Longtail Keywords
-- {longtail_keywords_formatted}
+{longtail_keywords_formatted}
 
-**Insight**: Longtail keywords are vital for targeting niche markets and specific customer intents. They allow for more precise targeting, leading to improved conversion rates as they often match closely with what users are searching for. Crafting content around longtail keywords enables businesses to address specific needs, questions, and concerns of their audience, making it a powerful tool for engaging with potential customers on a deeper level.
+**Insight**: Longtail keywords target specific queries and are crucial for attracting a targeted audience with clear intent. These keywords often result in higher conversion rates as they match closely with user searches. They allow you to cater to specific needs and stand out in a crowded market.
 
 #### Local SEO Keywords
-- {local_keywords_formatted}
+{local_keywords_formatted}
 
-**Insight**: Local SEO keywords are indispensable for businesses operating in specific geographical locations. They target users who are searching for products or services in their area, making them crucial for driving foot traffic and local online visibility. By optimizing for local SEO keywords, businesses can significantly increase their chances of being discovered by nearby customers, enhancing local engagement and opportunities for in-person visits. Effective use of local keywords can transform how businesses connect with their community and local market.
-
+**Insight**: Local SEO keywords are key for businesses targeting a specific geographic area. They help you attract local customers who are looking for services or products in their immediate vicinity. Optimizing for local keywords increases your visibility in local searches, driving foot traffic and local online engagement.
 """
 
     return result
@@ -56,13 +63,10 @@ def main():
     if st.button("Generate Keywords"):
         nouns = extract_nouns(description)
         
-        # Generate keyword categories
-        broad = nouns[:5]  # Adjust as needed
-        longtail = [f"{noun} services" for noun in nouns[5:10]]
-        local = [f"{noun} in {location}" for noun in nouns[10:15]]
+        broad, longtail, local = generate_keywords(nouns, location)
         
         insights = format_keyword_insights(description, location, broad, longtail, local)
-        st.markdown(insights, unsafe_allow_html=True)
+        st.markdown(insights)
 
 if __name__ == "__main__":
     main()
