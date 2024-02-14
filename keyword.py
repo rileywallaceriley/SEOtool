@@ -13,32 +13,33 @@ pytrends = TrendReq(hl='en-US', tz=360)
 
 def extract_nouns(description):
     """
-    Extract nouns from the business description to use as keywords.
+    Extracts nouns from the business description to use as keywords.
     """
     stop_words = set(stopwords.words('english'))
     words = word_tokenize(description)
     nouns = [word for (word, pos) in pos_tag(words) if pos[:2] == 'NN' and word.lower() not in stop_words]
     return list(set(nouns))
 
-def get_search_interest(keywords):
+def get_search_interest(keyword):
     """
-    Fetch relative search interest for the keywords using Google Trends.
+    Fetches relative search interest for a single keyword using Google Trends.
+    Returns a dictionary with the keyword and its interest or error status.
     """
     try:
-        pytrends.build_payload(keywords, cat=0, timeframe='today 12-m', geo='', gprop='')
+        pytrends.build_payload([keyword], cat=0, timeframe='today 12-m', geo='', gprop='')
         interest_over_time = pytrends.interest_over_time()
         if not interest_over_time.empty:
-            normalized_scores = (interest_over_time.mean() / interest_over_time.mean().max() * 100).round(0).astype(int)
-            return normalized_scores.to_dict()
+            normalized_score = (interest_over_time.mean() / interest_over_time.mean().max() * 100).round(0).astype(int)
+            return {keyword: normalized_score[keyword]}
         else:
-            return {keyword: "N/A" for keyword in keywords}
+            return {keyword: "N/A"}
     except Exception as e:
-        st.error(f"Error fetching search interest: {e}")
-        return {keyword: "Error" for keyword in keywords}
+        st.error(f"Error fetching search interest for {keyword}: {e}")
+        return {keyword: "Error"}
 
-def format_keyword_results(description, location, keywords_with_interest):
+def format_keyword_results(description, location, keywords_interest_dict):
     """
-    Format the keyword research results, including search interest.
+    Formats the keyword research results, including search interest.
     """
     result = f"""### SEO Keyword Research Results
 
@@ -47,9 +48,8 @@ def format_keyword_results(description, location, keywords_with_interest):
 Location: {location}
 
 #### Keywords and Estimated Search Interest
-**Keywords**:
 """
-    for keyword, interest in keywords_with_interest.items():
+    for keyword, interest in keywords_interest_dict.items():
         result += f"- {keyword}: *Estimated Search Interest: {interest}*\n"
 
     return result
@@ -65,15 +65,12 @@ def main():
     if st.button("Generate Keywords"):
         nouns = extract_nouns(description)
         
-        # Simulating broad, longtail, and local SEO keywords generation
-        broad_keywords = nouns
-        longtail_keywords = [f"{noun} services" for noun in nouns] + [f"how to use {noun}" for noun in nouns]
-        local_seo_keywords = [f"{noun} in {location}" for noun in nouns]
+        keywords_interest_dict = {}
+        for noun in nouns[:5]:  # Limit to 5 to prevent overloading pytrends
+            interest_dict = get_search_interest(noun)
+            keywords_interest_dict.update(interest_dict)
         
-        all_keywords = list(set(broad_keywords + longtail_keywords + local_seo_keywords))
-        search_interests = get_search_interest(all_keywords)
-        
-        results = format_keyword_results(description, location, search_interests)
+        results = format_keyword_results(description, location, keywords_interest_dict)
         st.markdown(results)
 
 if __name__ == "__main__":
