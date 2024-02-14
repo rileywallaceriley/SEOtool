@@ -30,16 +30,24 @@ def get_individual_search_interest(keyword):
         print(f"Error fetching search interest for {keyword}: {e}")
         return None
 
+def get_search_interests(keywords):
+    interests = {}
+    for keyword in keywords:
+        interest = get_individual_search_interest(keyword)
+        interests[keyword] = interest if interest is not None else "N/A"
+    return interests
+
 def calculate_average_interest(interests):
-    valid_interests = [interest for interest in interests.values() if interest is not None]
+    valid_interests = [interest for interest in interests.values() if interest is not None and interest != "N/A"]
     if valid_interests:
-        return sum(valid_interests) / len(valid_interests)
+        average = sum(valid_interests) / len(valid_interests)
+        return round(average, 2)
     return "N/A"
 
-def format_keyword_insights(description, location, broad_keywords, longtail_keywords, local_seo_keywords):
-    broad_avg = calculate_average_interest(broad_keywords)
-    longtail_avg = calculate_average_interest(longtail_keywords)
-    local_avg = calculate_average_interest(local_seo_keywords)
+def format_keyword_insights(description, location, broad, longtail, local, broad_interests, longtail_interests, local_interests):
+    broad_avg = calculate_average_interest(broad_interests)
+    longtail_avg = calculate_average_interest(longtail_interests)
+    local_avg = calculate_average_interest(local_interests)
 
     result = f"""### SEO Keyword Research Insights
 
@@ -48,16 +56,19 @@ def format_keyword_insights(description, location, broad_keywords, longtail_keyw
 Location: {location}
 
 #### Broad Keywords
+**Keywords**: {', '.join(broad)}
 **Average Search Volume**: {broad_avg}
-**Insight**: Broad keywords are foundational for your SEO strategy, helping to establish a wide net in search results. They are essential for capturing high-level interest in your business domain, although they might be more competitive.
+**Insight**: Broad keywords establish your presence in wide-reaching topics related to your business. They're essential but competitive, offering a high-level view of your market.
 
 #### Longtail Keywords
+**Keywords**: {', '.join(longtail)}
 **Average Search Volume**: {longtail_avg}
-**Insight**: Longtail keywords are critical for targeting specific customer intents and queries. These keywords, being more detailed, can drive higher conversion rates as they often match closely with the user's search intent.
+**Insight**: Longtail keywords target specific queries, leading to higher conversion rates. They're less competitive and closely align with user intent, making them valuable for targeted content.
 
 #### Local SEO Keywords
+**Keywords**: {', '.join(local)}
 **Average Search Volume**: {local_avg}
-**Insight**: Local SEO keywords are indispensable for businesses serving specific geographic areas. They help in capturing searches with local intent, essential for attracting customers in your vicinity. High-performing local keywords can significantly increase visibility in local search results, driving foot traffic and local engagements.
+**Insight**: Local keywords are crucial for businesses targeting specific areas. They help capture users with local intent, driving relevant traffic and potential in-person visits.
 """
 
     return result
@@ -73,15 +84,16 @@ def main():
     if st.button("Generate Keywords"):
         nouns = extract_nouns(description)
         
-        all_keywords = nouns[:5]  # Simplified for demonstration
-        interests = {keyword: get_individual_search_interest(keyword) for keyword in all_keywords}
+        # Generate keyword categories
+        broad = nouns[:3]
+        longtail = [f"{noun} services" for noun in nouns[3:5]]
+        local = [f"{noun} in {location}" for noun in nouns[5:7]]
         
-        # Simulate categorization for demonstration
-        broad_interests = {k: v for k, v in interests.items() if k in nouns[:2]}
-        longtail_interests = {k: v for k, v in interests.items() if k in nouns[2:4]}
-        local_interests = {k: v for k, v in interests.items() if k in nouns[4:5]}
+        # Collect all keywords for interest analysis
+        all_keywords = broad + longtail + local
+        interests = get_search_interests(all_keywords)
         
-        insights = format_keyword_insights(description, location, broad_interests, longtail_interests, local_interests)
+        insights = format_keyword_insights(description, location, broad, longtail, local, interests, interests, interests)
         st.markdown(insights)
 
 if __name__ == "__main__":
