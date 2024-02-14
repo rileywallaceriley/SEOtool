@@ -1,69 +1,67 @@
 import streamlit as st
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk import pos_tag
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('stopwords')
 
-def generate_seo_keywords(description, location):
-    """
-    Generates SEO keywords based on the business description and location.
-    This function manually defines keywords for demonstration purposes.
-    """
-    broad_keywords = [
-        'plant-based bakery',
-        'vegan cookies',
-        'baked treats',
-        'online bakery shop',
-    ]
+def extract_nouns(description):
+    stop_words = set(stopwords.words('english'))
+    words = word_tokenize(description)
+    # Enhance noun extraction by considering adjectives (JJ) for more descriptive keywords
+    relevant_words = [word for (word, pos) in pos_tag(words) if pos[:2] in ['NN', 'JJ'] and word.lower() not in stop_words]
+    return list(set(relevant_words))
 
-    longtail_keywords = [
-        'plant-based bakery in Whitby',
-        'vegan cookie delivery GTA',
-        'dine safe certified vegan treats',
-        'online vegan treats ordering',
-    ]
+def generate_keywords(words, location):
+    """Generates more targeted and descriptive keywords."""
+    broad = ['plant-based bakery', 'vegan baked goods', 'online vegan treats']  # Directly relevant to the business
+    longtail = [f"plant-based treats in {location}", "dine safe certified bakery", "vegan cookie delivery GTA"]  # Specific services and location
+    local = [f"vegan bakery near {location}", f"plant-based bakery in GTA", f"vegan treats in {location}"]  # Emphasize location
+    
+    return broad, longtail, local
 
-    local_seo_keywords = [
-        'vegan bakery Whitby',
-        'plant-based treats Oshawa',
-        'vegan cookies Bowmanville',
-        'GTA vegan baked goods delivery',
-    ]
+def format_keyword_insights(description, location, broad, longtail, local):
+    broad_keywords_formatted = "\n".join(f"- {keyword}" for keyword in broad)
+    longtail_keywords_formatted = "\n".join(f"- {keyword}" for keyword in longtail)
+    local_keywords_formatted = "\n".join(f"- {keyword}" for keyword in local)
 
-    return broad_keywords, longtail_keywords, local_seo_keywords
+    result = f"""### SEO Keyword Research Insights
 
-def format_keyword_insights(broad, longtail, local):
-    """
-    Formats the generated keywords into a markdown string with insights.
-    """
-    broad_formatted = "\n".join(f"- {keyword}" for keyword in broad)
-    longtail_formatted = "\n".join(f"- {keyword}" for keyword in longtail)
-    local_formatted = "\n".join(f"- {keyword}" for keyword in local)
-
-    insights = f"""
-### SEO Keyword Research Insights
+#### Business Description Input:
+- {description}
+- Location: {location}
 
 #### Broad Keywords
-{broad_formatted}
+{broad_keywords_formatted}
 
-Broad keywords help establish your presence in the market, targeting a wide audience interested in vegan and plant-based options.
+Broad keywords help to establish your business's presence online, targeting audiences interested in vegan and plant-based offerings. They form the cornerstone of your SEO strategy, enhancing your brand's visibility.
 
 #### Longtail Keywords
-{longtail_formatted}
+{longtail_keywords_formatted}
 
-Longtail keywords target specific queries, leading to higher conversion rates as they closely match user search intent.
+Longtail keywords are essential for reaching users with specific search intents. These more detailed queries often lead to higher engagement and conversion rates by precisely matching user interest.
 
 #### Local SEO Keywords
-{local_formatted}
+{local_keywords_formatted}
 
-Local SEO keywords target users in specific geographic areas, essential for attracting local traffic and enhancing visibility in local search results.
-    """
+Local SEO keywords focus on attracting customers within your immediate geographic area. They are crucial for businesses that rely on local patronage and want to boost their local online presence and foot traffic.
+"""
 
-    return insights
+    return result
 
 def main():
     st.title("SEO Keyword Research Tool")
+    logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
+    st.image(logo_url, width=200)
+    
     description = "Welcome to Better Batter Cookie Co., your go-to for delicious baked treats in Whitby. We're excited to announce Friday shipping to most of the GTA – check your postal code at checkout! Our dine safe certified bakery, offers all plant-based treats. Find our products directly on our site, at Mathilda’s restaurant in Oshawa, The Nooks in the Oshawa Centre, and Markets in Bowmanville."
-    location = "Whitby, GTA, Oshawa, Bowmanville"
-
-    broad_keywords, longtail_keywords, local_seo_keywords = generate_seo_keywords(description, location)
-    insights = format_keyword_insights(broad_keywords, longtail_keywords, local_seo_keywords)
+    location = "Whitby, GTA"
+    
+    nouns = extract_nouns(description)
+    broad, longtail, local = generate_keywords(nouns, location)
+    insights = format_keyword_insights(description, location, broad, longtail, local)
     st.markdown(insights)
 
 if __name__ == "__main__":
