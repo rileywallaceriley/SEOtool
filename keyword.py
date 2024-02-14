@@ -1,74 +1,46 @@
 import streamlit as st
-from pytrends.request import TrendReq
-import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk import pos_tag
+import nltk
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
 
-# Initialize pytrends
-pytrends = TrendReq(hl='en-US', tz=360)
-
 def extract_nouns(description):
+    """Extracts nouns from the business description to use as keywords."""
     stop_words = set(stopwords.words('english'))
     words = word_tokenize(description)
     nouns = [word for (word, pos) in pos_tag(words) if pos[:2] == 'NN' and word.lower() not in stop_words]
     return list(set(nouns))
 
-def get_individual_search_interest(keyword):
-    try:
-        pytrends.build_payload([keyword], cat=0, timeframe='today 12-m', geo='', gprop='')
-        interest_over_time = pytrends.interest_over_time()
-        if not interest_over_time.empty:
-            normalized_score = interest_over_time.mean().round(0).astype(int)[keyword]
-            return normalized_score
-        else:
-            return None
-    except Exception as e:
-        print(f"Error fetching search interest for {keyword}: {e}")
-        return None
-
-def get_search_interests(keywords):
-    interests = {}
-    for keyword in keywords:
-        interest = get_individual_search_interest(keyword)
-        interests[keyword] = interest if interest is not None else "N/A"
-    return interests
-
-def calculate_average_interest(interests):
-    valid_interests = [interest for interest in interests.values() if interest is not None and interest != "N/A"]
-    if valid_interests:
-        average = sum(valid_interests) / len(valid_interests)
-        return round(average, 2)
-    return "N/A"
-
-def format_keyword_insights(description, location, broad, longtail, local, broad_interests, longtail_interests, local_interests):
-    broad_avg = calculate_average_interest(broad_interests)
-    longtail_avg = calculate_average_interest(longtail_interests)
-    local_avg = calculate_average_interest(local_interests)
+def format_keyword_insights(description, location, broad, longtail, local):
+    """Formats insights with detailed logic and keyword lists."""
+    broad_keywords_formatted = "\n".join(f"- {keyword}" for keyword in broad)
+    longtail_keywords_formatted = "\n".join(f"- {keyword}" for keyword in longtail)
+    local_keywords_formatted = "\n".join(f"- {keyword}" for keyword in local)
 
     result = f"""### SEO Keyword Research Insights
 
 #### Business Description Input:
-{description}
-Location: {location}
+- {description}
+- Location: {location}
 
 #### Broad Keywords
-**Keywords**: {', '.join(broad)}
-**Average Search Volume**: {broad_avg}
-**Insight**: Broad keywords establish your presence in wide-reaching topics related to your business. They're essential but competitive, offering a high-level view of your market.
+- {broad_keywords_formatted}
+
+**Insight**: Broad keywords are the pillars of your SEO strategy, providing a foundation that helps you capture a wide audience. They are crucial for creating a strong initial impression in search engines, though they can be highly competitive. By strategically using broad keywords, businesses can improve their visibility for general topics, which is essential for attracting a diverse audience. However, balancing these with more specific keywords is key to targeting the right customers.
 
 #### Longtail Keywords
-**Keywords**: {', '.join(longtail)}
-**Average Search Volume**: {longtail_avg}
-**Insight**: Longtail keywords target specific queries, leading to higher conversion rates. They're less competitive and closely align with user intent, making them valuable for targeted content.
+- {longtail_keywords_formatted}
+
+**Insight**: Longtail keywords are vital for targeting niche markets and specific customer intents. They allow for more precise targeting, leading to improved conversion rates as they often match closely with what users are searching for. Crafting content around longtail keywords enables businesses to address specific needs, questions, and concerns of their audience, making it a powerful tool for engaging with potential customers on a deeper level.
 
 #### Local SEO Keywords
-**Keywords**: {', '.join(local)}
-**Average Search Volume**: {local_avg}
-**Insight**: Local keywords are crucial for businesses targeting specific areas. They help capture users with local intent, driving relevant traffic and potential in-person visits.
+- {local_keywords_formatted}
+
+**Insight**: Local SEO keywords are indispensable for businesses operating in specific geographical locations. They target users who are searching for products or services in their area, making them crucial for driving foot traffic and local online visibility. By optimizing for local SEO keywords, businesses can significantly increase their chances of being discovered by nearby customers, enhancing local engagement and opportunities for in-person visits. Effective use of local keywords can transform how businesses connect with their community and local market.
+
 """
 
     return result
@@ -85,16 +57,12 @@ def main():
         nouns = extract_nouns(description)
         
         # Generate keyword categories
-        broad = nouns[:3]
-        longtail = [f"{noun} services" for noun in nouns[3:5]]
-        local = [f"{noun} in {location}" for noun in nouns[5:7]]
+        broad = nouns[:5]  # Adjust as needed
+        longtail = [f"{noun} services" for noun in nouns[5:10]]
+        local = [f"{noun} in {location}" for noun in nouns[10:15]]
         
-        # Collect all keywords for interest analysis
-        all_keywords = broad + longtail + local
-        interests = get_search_interests(all_keywords)
-        
-        insights = format_keyword_insights(description, location, broad, longtail, local, interests, interests, interests)
-        st.markdown(insights)
+        insights = format_keyword_insights(description, location, broad, longtail, local)
+        st.markdown(insights, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
