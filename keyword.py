@@ -34,11 +34,23 @@ def get_search_interest(keywords):
         st.error(f"Error fetching search interest: {e}")
         return {keyword: "Error" for keyword in keywords}
 
-def expand_keywords(nouns, location):
-    broad_keywords = nouns
-    longtail_keywords = [f"{noun} services" for noun in nouns] + [f"how to use {noun}" for noun in nouns]
-    local_seo_keywords = [f"{noun} in {location}" for noun in nouns]
-    return broad_keywords, longtail_keywords, local_seo_keywords
+def format_keyword_results(description, location, keywords_with_interest):
+    # Assuming keywords_with_interest is a list of tuples [(keyword, interest), ...]
+    result = f"""### SEO Keyword Research Results
+
+#### Business Description Input:
+{description}
+Location: {location}
+
+#### Keywords and Estimated Search Interest
+**Description**: Keywords generated from the business description with rough search interest estimates based on Google Trends data.
+
+**Keywords**:
+"""
+    for keyword, interest in keywords_with_interest:
+        result += f"- {keyword} - *Estimated Search Interest: {interest}*\n"
+
+    return result
 
 def main():
     st.title("SEO Keyword Research Tool")
