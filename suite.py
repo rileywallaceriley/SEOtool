@@ -11,7 +11,7 @@ st.markdown("""
 <div style="text-align: center;">
 <h2>SEO? Easy peasy with RepuRocket!</h2>
 
-<p>Search engine optimization (SEO) is a multi-billion-dollar industry, so, why don't more people know more about how it work? Well, that's by design.</p> 
+<p>There are close to 200 factors that Google considers when ranking websites in its search. But, did you know that over 60% of marketers agree that on-page content development is the most effective SEO tactic?</p> 
 
 <p>It's true! <strong>Better content, keywords and meta</strong> can make a world of difference, once you have a clear strategy. RepuRocket can help you create and carry out that strategy; think of us as your friendly neighbourhood SEO buddy, here to help you climb those Google ranks without the headache.</p>
 
