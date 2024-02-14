@@ -11,21 +11,21 @@ st.markdown("""
 <div style="text-align: center;">
 <h2>SEO? Easy peasy with RepuRocket!</h2>
 
-<p>Search engine optimization (SEO) is a multi-billion-dollar industry, so, why don't more people know more about it?</p> 
+<p>Search engine optimization (SEO) is a multi-billion-dollar industry, so, why don't more people know more about how it work? Well, that's by design.</p> 
 
 <p><strong>Ever gotten sketchy phone calls or WhatsApp requests?</strong> It's probably one of the more shadowy industries around; in fact, the lack of knowledge about it has made it one of the most scammy industries too, filled with bad actors with bad intentions.</p>
 
 <p>Forget going from 0 to 100 and dropping thousands a month on 'SEO' that might not make any meaningful changes to your results. <strong>Take control with RepuRocket.</strong></p>
 
-<h2>RepuRocket makes SEO a breeze! </h2>
+<h3>RepuRocket makes SEO a breeze! </h3>
 
-<p>There are close to 200 factors that Google considers when ranking websites in its search. But, did you know that over 60% of marketers agree that on-page content development is the most effective SEO tactic? </p>
+<p>There are close to 200 factors that Google considers when ranking websites in its search. But, did you know that over 60% of marketers agree that on-page content development is the most effective tactic? </p>
 
 <p>It's true! <strong>Better content, keywords and meta</strong> can make a world of difference, once you have a clear strategy. RepuRocket can help you create and carry out that strategy; think of us as your friendly neighbourhood SEO buddy, here to help you climb those Google ranks without the headache.</p>
 
 <p>With a few simple clicks, you can discover the right keywords, peek at what your competitors are up to, and get easy tips that <em>actually</em> work.</p>
 
-<h2>More results, without the big-agency price tag.</h2>
+<h3>More results, without the big-agency price tag.</h3>
 
 <p>No more SEO jargon or confusion. <strong>Just clear, straightforward advice to boost your site</strong>. Join RepuRocket, and let’s make your website shine together.</p>
     </div>
