@@ -13,10 +13,6 @@ st.markdown("""
 
 <p>Search engine optimization (SEO) is a multi-billion-dollar industry, so, why don't more people know more about how it work? Well, that's by design.</p> 
 
-<p><strong>Ever gotten sketchy phone calls or WhatsApp requests?</strong> It's probably one of the more shadowy industries around; in fact, the lack of knowledge about it has made it one of the most scammy industries too, filled with bad actors with bad intentions.</p>
-
-<p>Forget going from 0 to 100 and dropping thousands a month on 'SEO' that might not make any meaningful changes to your results. <strong>Take control with RepuRocket.</strong></p>
-
 <h3>RepuRocket makes SEO a breeze! </h3>
 
 <p>There are close to 200 factors that Google considers when ranking websites in its search. But, did you know that over 60% of marketers agree that on-page content development is the most effective tactic? </p>
