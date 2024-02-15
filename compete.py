@@ -87,35 +87,13 @@ if st.button('Analyze Competitors'):
         st.subheader('Comprehensive SEO Recommendations:')
         st.markdown(recommendations)
 
-        # New section for exploring other tools
-        st.markdown("### Your journey is just beginning.")
-
-        # Define a function to display each tool section with centered title and description
-        def display_tool_section(header, description, button_label, button_url):
-            with st.container():
-                st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
-                st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
-                
-                button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
-                st.markdown(button_html, unsafe_allow_html=True)
-                
-                st.markdown("---")
-
-        # Tool descriptions
-        tools = [
-            {
-                "header": "RepuSEO-Helper",
-                "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-                "button_label": "Use Now - RepuSEO-Helper",
-                "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-            },
-            # Add other tools here following the same structure
-        ]
-
-        # Loop through each tool and display its section
-        for tool in tools:
-            display_tool_section(tool["header"], tool["description"], tool["button_label"], tool["button_url"])
-
+        # Divider between the results and the new section
+        st.markdown("---")
+        
+        # New section header and copy
+        st.markdown("### **Your journey is just beginning.**")
+        st.markdown("SEO is a marathon; let’s keep moving toward our goals!")
+        
         # Adjusting columns for responsive image display at the bottom
         left_column, image_column, right_column = st.columns([1, 10, 1])
         with image_column:
