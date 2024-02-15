@@ -88,7 +88,6 @@ if st.button('Analyze Competitors'):
         st.markdown(recommendations)
 
         # New section for exploring other tools
-        st.subheader('Explore our other tools')
         st.markdown("### Your journey is just beginning.")
 
         # Define a function to display each tool section with centered title and description
