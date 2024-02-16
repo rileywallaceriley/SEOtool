@@ -58,9 +58,9 @@ def generate_structured_blog(keyword, url, length, include_cta=False, cta_text="
         prompt += f" End with a Call to Action: '{cta_text}'."
     
     try:
-        completion = client.completions.create(
-            prompt=prompt,
-            model="gpt-4",  # Adjust based on availability and your specific needs
+          completion = client.chat.completions.create(
+            model='gpt-4',  # Assuming using GPT-4, adjust as necessary
+            messages=messages
             max_tokens=length * 5,  # Rough estimate to ensure enough content is generated
             temperature=0.7,  # Adjust for creativity
             top_p=1.0,
