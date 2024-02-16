@@ -61,11 +61,6 @@ def generate_structured_blog(keyword, url, length, include_cta=False, cta_text="
           completion = client.chat.completions.create(
             model='gpt-4',  # Assuming using GPT-4, adjust as necessary
             messages=messages
-            max_tokens=length * 5,  # Rough estimate to ensure enough content is generated
-            temperature=0.7,  # Adjust for creativity
-            top_p=1.0,
-            frequency_penalty=0,
-            presence_penalty=0
         )
         return completion.choices[0].text.strip()
     except Exception as e:
