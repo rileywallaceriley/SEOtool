@@ -61,7 +61,7 @@ def generate_seo_analysis_and_recommendations(user_data, competitor_data):
     # Your SEO homework:
     [Outline specific tasks for implementing the suggested improvements, including detailed logic for each task.]
     """
-    
+    st.markdown("---")
     if user_data:
         analysis_prompt += f"User's Website Meta Title: {user_data['title']}\nUser's Meta Description: {user_data['meta_description']}\nUser's Meta Keywords: {user_data['meta_keywords']}\nUser's Main Content: {user_data['content']}\n\n"
     
