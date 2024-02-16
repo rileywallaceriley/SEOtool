@@ -123,52 +123,49 @@ url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
 location = st.text_input('Enter your location (e.g., "New York, USA") here:')
 
-    if st.button('Analyze'):
-        if url and keyword and location:
-            with st.spinner('Analyzing...'):
-                # Existing analyze functionality
-                ranking = get_google_search_results(keyword, url, location)
-                content = scrape_content(url)
-                recommendations = get_recommendations(content, ranking, url)
-                
-                if ranking is not None and ranking <= 50:
-                    st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
-                else:
-                    st.write('Your site was not found in the top 50 results.')
-                
-                st.subheader('SEO Recommendations:')
-                st.write(recommendations)
+if st.button('Analyze'):
+    if url and keyword and location:
+        with st.spinner('Analyzing...'):
+            # Existing analyze functionality
+            ranking = get_google_search_results(keyword, url, location)
+            content = scrape_content(url)
+            recommendations = get_recommendations(content, ranking, url)
+            
+            if ranking is not None and ranking <= 50:
+                st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
+            else:
+                st.write('Your site was not found in the top 50 results.')
+            
+            st.subheader('SEO Recommendations:')
+            st.write(recommendations)
 
         # Define a function to display each tool section with centered title and description
-            def display_tool_section(header, description, button_label, button_url):
-                with st.container():
-                    # Use HTML to center the header and description
-                    st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
-                    st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
-                    
-                    # Centered button with HTML
-                    button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
-                    st.markdown(button_html, unsafe_allow_html=True)
-                    
-                    # Divider
-                    st.markdown("---")
-
-            # Display the additional SEO tools and resources
-            st.markdown("---")
-            tools = [
-                # Tool descriptions as provided
-            ]
-
-            # Displaying the tool sections
-            for tool in tools:
-                display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
-
-            # Responsive image display at the bottom
-            left_column, image_column, right_column = st.columns([1, 10, 1])
-            with image_column:
-                st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
-    else:
-        st.warning('Please enter a URL and a keyword.')
+        def display_tool_section(header, description, button_label, button_url):
+            with st.container():
+                # Use HTML to center the header and description
+                st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
+                st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
                 
-        else:
-            st.warning('Please enter a URL, a keyword, and a location.')
+                # Centered button with HTML
+                button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
+                st.markdown(button_html, unsafe_allow_html=True)
+                
+                # Divider
+                st.markdown("---")
+
+        # Display the additional SEO tools and resources immediately after defining the function
+        st.markdown("---")
+        tools = [
+            # Tool descriptions as provided
+        ]
+
+        # Displaying the tool sections
+        for tool in tools:
+            display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+
+        # Responsive image display at the bottom
+        left_column, image_column, right_column = st.columns([1, 10, 1])
+        with image_column:
+            st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
+    else:
+        st.warning('Please enter a URL, a keyword, and a location.')
