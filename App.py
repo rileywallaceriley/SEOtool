@@ -167,7 +167,7 @@ if st.button('Analyze'):
         "header": "Blog SEO Helper",
         "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
         "button_label": "Use Now - Blog SEO Helper",
-        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
+        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app/"
     },
     {
         "header": "RepuSEO Plagiarism Checker",
