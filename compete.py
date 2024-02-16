@@ -102,8 +102,6 @@ if st.button('Analyze Competitors'):
 
 # New section with centered headers, descriptions, and buttons
 st.markdown("---")
-st.markdown("### **Your journey is just beginning.**", unsafe_allow_html=True)
-st.markdown("SEO is a marathon; let’s keep moving toward our goals!", unsafe_allow_html=True)
 
 # Define a function to display each tool section with centered title and description
 def display_tool_section(header, description, button_label, button_url):
