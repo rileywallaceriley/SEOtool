@@ -115,6 +115,7 @@ if st.button('Analyze Competitors'):
                 st.markdown("---")
 
         # Tool descriptions
+        st.markdown("---")
         tools = [
             {
                 "header": "RepuSEO-Helper",
