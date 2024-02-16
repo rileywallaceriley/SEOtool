@@ -57,8 +57,26 @@ if st.button('Generate Blog Content'):
     # Display the additional SEO tools and resources
     st.markdown("---")
     tools = [
-        # Tool descriptions as provided in the request
-    ]
+    {
+        "header": "RepuSEO-Helper",
+        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
+        "button_label": "Use Now - RepuSEO-Helper",
+        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
+    },
+    {
+        "header": "Competitive Edge",
+        "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
+        "button_label": "Use Now - Competitive Edge",
+        "button_url": "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app"
+    },
+    {
+        "header": "RepuSEO Plagiarism Checker",
+        "description": "Ensure the originality of your content with our advanced plagiarism detection tool.",
+        "button_label": "Use Now - RepuSEO Plagiarism Checker",
+        "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
+    },
+    
+]
 
     # Function to display each tool section with centered title and description
     def display_tool_section(header, description, button_label, button_url):
