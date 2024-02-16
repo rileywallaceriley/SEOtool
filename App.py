@@ -141,33 +141,36 @@ with col1:
                 st.subheader('SEO Recommendations:')
                 st.write(recommendations)
                 
-       # Define a function to display each tool section with centered title and description
-            def display_tool_section(header, description, button_label, button_url):
-                with st.container():
-                    # Use HTML to center the header and description
-                    st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
-                    st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
-                    
-                    # Centered button with HTML
-                    button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
-                    st.markdown(button_html, unsafe_allow_html=True)
-                    
-                    # Divider
-                    st.markdown("---")
+        else:
+            st.warning('Please enter a URL, a keyword, and a location.')
 
-            # Display the additional SEO tools and resources
-            st.markdown("---")
-            tools = [
-                # Tool descriptions as provided
-            ]
+with col2:
+    if st.button('Keywords'):
+        if url and keyword:
+            with st.spinner('Analyzing Keywords...'):
+                content = scrape_content(url)
+                keyword_suggestions, keyword_competition = analyze_keywords(content, keyword)
+                st.write('Keyword Suggestions:', keyword_suggestions)
+                st.write('Keyword Competition Data:', keyword_competition)
+        else:
+            st.warning('Please enter a URL and a keyword.')
 
-            # Displaying the tool sections
-            for tool in tools:
-                display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+with col3:
+    if st.button('Pillar'):
+        if url and keyword:
+            with st.spinner('Generating Pillar Page Content...'):
+                content = scrape_content(url)
+                pillar_content = generate_pillar_content(content, keyword, url)
+                st.text_area('Pillar Page Content:', pillar_content)
+        else:
+            st.warning('Please enter a URL and a keyword.')
 
-            # Responsive image display at the bottom
-            left_column, image_column, right_column = st.columns([1, 10, 1])
-            with image_column:
-                st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
-    else:
-        st.warning('Please enter a URL and a keyword.')
+with col4:
+    if st.button('Meta'):
+        if url and keyword:
+            with st.spinner('Generating Meta Content...'):
+                content = scrape_content(url)
+                meta_content = generate_meta_content(content, keyword)
+                st.text_area('Meta Description:', meta_content)
+        else:
+            st.warning('Please enter a URL and a keyword.')
