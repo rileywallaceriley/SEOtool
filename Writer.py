@@ -57,12 +57,12 @@ def generate_structured_blog(keyword, url, length, include_cta=False, cta_text="
     if include_cta:
         prompt += f" End with a Call to Action: '{cta_text}'."
     
-    try:
-          completion = client.chat.completions.create(
+          try:
+        completion = client.chat.completions.create(
             model='gpt-4',  # Assuming using GPT-4, adjust as necessary
             messages=messages
         )
-        return completion.choices[0].text.strip()
+        return completion.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
