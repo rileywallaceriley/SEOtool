@@ -25,15 +25,15 @@ cta_text = st.text_input('Enter your Call to Action text here:', '') if include_
 
 def generate_structured_blog(topic, length, url="", include_cta=False, cta_text=""):
     """
-    Generates structured blog content with specified sections and optional CTA using GPT-4's chat completions.
+    Generates structured blog content using GPT-4's chat completions.
     """
     messages = [
-        {"role": "system", "content": "You are a highly skilled AI trained to write SEO-rich blog posts. Include an SEO Title, Introduction, Main Body Copy, and Conclusion."},
-        {"role": "user", "content": f"Write a blog post about '{topic}' that is approximately {length} words long."}
+        {"role": "system", "content": "You are a highly skilled AI trained to write SEO-rich blog posts with natural headings and structured content."},
+        {"role": "user", "content": f"Create a structured blog post on '{topic}' targeting around {length} words. Please format with natural headings for sections without explicitly naming them 'Introduction' or 'Conclusion'. Include various subtopics for a comprehensive coverage."}
     ]
 
-    if include_cta:
-        messages.append({"role": "user", "content": f"Include a call to action: '{cta_text}'."})
+    if include_cta and cta_text:
+        messages.append({"role": "user", "content": f"Conclude with a call to action: '{cta_text}'."})
     
     if url:
         messages.append({"role": "user", "content": f"Reference URL: {url}"})
@@ -51,6 +51,32 @@ def generate_structured_blog(topic, length, url="", include_cta=False, cta_text=
 
 if st.button('Generate Blog Content'):
     blog_content = generate_structured_blog(blog_topic, blog_length, url, include_cta, cta_text)
-    # Format and display the blog content with markdown for enhanced readability
     st.markdown("### Blog Content")
-    st.markdown(blog_content, unsafe_allow_html=False)  # Set to True only if you trust the source
+    st.markdown(blog_content, unsafe_allow_html=True)  # Display the blog content
+
+    # Display the additional SEO tools and resources
+    st.markdown("---")
+    tools = [
+        # Tool descriptions as provided in the request
+    ]
+
+    # Function to display each tool section with centered title and description
+    def display_tool_section(header, description, button_label, button_url):
+        with st.container():
+            st.markdown(f"#### {header}", unsafe_allow_html=True)
+            st.markdown(f"{description}", unsafe_allow_html=True)
+            
+            # Centered button with HTML
+            st.markdown(f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>""", unsafe_allow_html=True)
+            
+            # Divider
+            st.markdown("---")
+
+    # Displaying the tool sections
+    for tool in tools:
+        display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+
+    # Responsive image display at the bottom
+    left_column, image_column, right_column = st.columns([1, 10, 1])
+    with image_column:
+        st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
