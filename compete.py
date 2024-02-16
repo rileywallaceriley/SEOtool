@@ -120,6 +120,12 @@ def display_tool_section(header, description, button_label, button_url):
 # Tool descriptions and displaying the tool sections
 tools = [
     {
+        "header": "RepuSEO-Helper",
+        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
+        "button_label": "Use Now - RepuSEO-Helper",
+        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
+    },
+    {
         "header": "Blog SEO Helper",
         "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
         "button_label": "Use Now - Blog SEO Helper",
