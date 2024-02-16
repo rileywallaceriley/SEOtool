@@ -56,13 +56,8 @@ if st.button('Generate Blog Content'):
 
     # Display the additional SEO tools and resources
     st.markdown("---")
-    tools = [
-    {
-        "header": "RepuSEO-Helper",
-        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-        "button_label": "Use Now - RepuSEO-Helper",
-        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-    },
+
+tools = [
     {
         "header": "Competitive Edge",
         "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
@@ -70,31 +65,33 @@ if st.button('Generate Blog Content'):
         "button_url": "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app"
     },
     {
+        "header": "Blog SEO Helper",
+        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
+        "button_label": "Use Now - Blog SEO Helper",
+        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app/"
+    },
+    {
         "header": "RepuSEO Plagiarism Checker",
         "description": "Ensure the originality of your content with our advanced plagiarism detection tool.",
         "button_label": "Use Now - RepuSEO Plagiarism Checker",
         "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
     },
-    
 ]
 
-    # Function to display each tool section with centered title and description
-    def display_tool_section(header, description, button_label, button_url):
-        with st.container():
-            st.markdown(f"#### {header}", unsafe_allow_html=True)
-            st.markdown(f"{description}", unsafe_allow_html=True)
-            
-            # Centered button with HTML
-            st.markdown(f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>""", unsafe_allow_html=True)
-            
-            # Divider
-            st.markdown("---")
+# Function to display each tool section with centered title and description
+def display_tool_section(header, description, button_label, button_url):
+    st.markdown(f"#### {header}")
+    st.write(description)
+    link = f"[{button_label}]({button_url})"
+    st.markdown(link, unsafe_allow_html=True)
 
-    # Displaying the tool sections
-    for tool in tools:
-        display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+# Displaying the tool sections
+for tool in tools:
+    with st.container():
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+        st.markdown("---")  # Divider for each section
 
-    # Responsive image display at the bottom
-    left_column, image_column, right_column = st.columns([1, 10, 1])
-    with image_column:
-        st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
+# Responsive image display at the bottom
+st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
