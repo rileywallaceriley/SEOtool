@@ -46,7 +46,20 @@ def scrape_competitor_data(url):
 # Function to generate SEO analysis and recommendations using OpenAI
 def generate_seo_analysis_and_recommendations(user_data, competitor_data):
     analysis_prompt = """
-    # [Your analysis and recommendation prompt here.]
+    # Analyze your competitor's SEO strategy:
+    [Here, include a detailed analysis based on competitor positioning.]
+
+    # Analyze your competitor's Meta & main copy:
+    [Include meta titles, descriptions, and main copy analysis here, noting any weaknesses and opportunities for improvement.]
+
+    # Identify your competitor's keywords:
+    [Detail the competitor's keywords from meta tags or content.]
+
+    # Roadmap for your SEO improvements:
+    [Discuss your page's strengths and suggest improvements based on competitor analysis.]
+
+    # Your SEO homework:
+    [Outline specific tasks for implementing the suggested improvements, including detailed logic for each task.]
     """
     
     if user_data:
@@ -87,16 +100,47 @@ if st.button('Analyze Competitors'):
         st.subheader('Comprehensive SEO Recommendations:')
         st.markdown(recommendations)
 
-        # Divider between the results and the new section
+# New section with centered headers, descriptions, and buttons
+st.markdown("---")
+st.markdown("### **Your journey is just beginning.**", unsafe_allow_html=True)
+st.markdown("SEO is a marathon; let’s keep moving toward our goals!", unsafe_allow_html=True)
+
+# Define a function to display each tool section with centered title and description
+def display_tool_section(header, description, button_label, button_url):
+    with st.container():
+        # Use HTML to center the header and description
+        st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
+        
+        # Centered button with HTML
+        button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
+        st.markdown(button_html, unsafe_allow_html=True)
+        
+        # Divider
         st.markdown("---")
-        
-        # New section header and copy
-        st.markdown("### **Your journey is just beginning.**")
-        st.markdown("SEO is a marathon; let’s keep moving toward our goals!")
-        
-        # Adjusting columns for responsive image display at the bottom
-        left_column, image_column, right_column = st.columns([1, 10, 1])
-        with image_column:
-            st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
-    else:
-        st.warning('Please enter at least one competitor URL.')
+
+# Tool descriptions and displaying the tool sections
+tools = [
+    {
+        "header": "Blog SEO Helper",
+        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
+        "button_label": "Use Now - Blog SEO Helper",
+        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
+    },
+    {
+        "header": "RepuSEO Plagiarism Checker",
+        "description": "Ensure the originality of your content with our advanced plagiarism detection tool.",
+        "button_label": "Use Now - RepuSEO Plagiarism Checker",
+        "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
+    },
+]
+
+# Displaying the tool sections
+for tool in tools:
+    display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+
+# Adjusting columns for responsive image display at the bottom
+left_column, image_column, right_column = st.columns([1, 10, 1])
+with image_column:
+    st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
+   
