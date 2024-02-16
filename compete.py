@@ -138,7 +138,7 @@ if st.button('Analyze Competitors'):
 
         # Displaying the tool sections
         for tool in tools:
-            display_tool_section(tool['header'], tool['description’], tool[‘button_label’], tool[‘button_url’])
+            display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
 
     # Adjusting columns for responsive image display at the bottom
     left_column, image_column, right_column = st.columns([1, 10, 1])
