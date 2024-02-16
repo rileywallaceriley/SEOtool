@@ -144,5 +144,3 @@ if st.button('Analyze Competitors'):
     left_column, image_column, right_column = st.columns([1, 10, 1])
     with image_column:
         st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
-
-This adjustment ensures that the entire section including the tool descriptions, buttons, and the final image will only be displayed once the analysis is triggered and results are displayed, keeping the initial load of your Streamlit app clean and focused on the primary user action.
