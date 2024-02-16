@@ -26,18 +26,7 @@ cta_text = st.text_input('Enter your Call to Action text here:', '') if include_
 def generate_structured_blog(topic, length, url="", include_cta=False, cta_text=""):
     """
     Generates structured blog content with specified sections and optional CTA using GPT-4's chat completions.
-
-    Parameters:
-    - topic: The topic for the blog.
-    - length: Target length of the blog (350, 700, or 1250 words).
-    - url: Optional reference URL for linking within the blog.
-    - include_cta: Whether to include a Call to Action.
-    - cta_text: Text for the Call to Action (if included).
-
-    Returns:
-    A string containing the structured blog content.
     """
-    # Preparing messages for the chat
     messages = [
         {"role": "system", "content": "You are a highly skilled AI trained to write SEO-rich blog posts. Include an SEO Title, Introduction, Main Body Copy, and Conclusion."},
         {"role": "user", "content": f"Write a blog post about '{topic}' that is approximately {length} words long."}
@@ -50,14 +39,18 @@ def generate_structured_blog(topic, length, url="", include_cta=False, cta_text=
         messages.append({"role": "user", "content": f"Reference URL: {url}"})
 
     try:
-        completion = client.chat.completions.create(
-            model='gpt-4',
-            messages=messages
-        )
-        return completion.choices[0].message.content
+        with st.spinner('Please wait... Writing'):
+            completion = client.chat.completions.create(
+                model='gpt-4',
+                messages=messages
+            )
+        blog_content = completion.choices[0].message.content
+        return blog_content
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
 if st.button('Generate Blog Content'):
     blog_content = generate_structured_blog(blog_topic, blog_length, url, include_cta, cta_text)
-    st.text_area("Generated Blog Content:", value=blog_content, height=400)
+    # Format and display the blog content with markdown for enhanced readability
+    st.markdown("### Blog Content")
+    st.markdown(blog_content, unsafe_allow_html=False)  # Set to True only if you trust the source
