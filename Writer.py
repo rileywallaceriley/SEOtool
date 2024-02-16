@@ -27,32 +27,57 @@ blog_topic = st.text_input('Enter the blog topic here:')
 main_keywords = st.text_input('Enter the main keywords (comma-separated) here:')
 blog_length = st.number_input('Enter the desired blog length (number of words):', min_value=150, max_value=3000, value=1000)
 
-def generate_blog_post(topic, keywords, length):
-    # Generate a prompt that instructs the AI to write an SEO-rich blog post
-    prompt = f"Write a detailed, engaging, and SEO-optimized blog post about '{topic}'. Include the following keywords: {keywords}. The blog post should be around {length} words long, well-structured with headers, subheaders, and include a keyword-optimized title."
+def generate_structured_blog(keyword, url, length, include_cta=False, cta_text=""):
+    """
+    Generates structured blog content with specified sections and optional CTA.
 
-    messages = [
-        {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
-        {"role": "user", "content": prompt}
-    ]
+    Parameters:
+    - keyword: Main keyword for the blog.
+    - url: Reference URL for linking within the blog.
+    - length: Target length of the blog (350, 700, or 1250 words).
+    - include_cta: Whether to include a Call to Action.
+    - cta_text: Text for the Call to Action (if included).
+
+    Returns:
+    A string containing the structured blog content.
+    """
+    # Adjusting the prompt based on the blog length
+    word_count = length
+    section_word_counts = {
+        'intro': word_count // 10,  # Approx. 10% of the words for the introduction
+        'main_body': word_count * 7 // 10,  # Approx. 70% for the main body
+        'conclusion': word_count * 2 // 10,  # Approx. 20% for the conclusion
+    }
+
+    prompt = (f"Create a structured blog post about '{keyword}' that is SEO optimized and includes the following sections: "
+              f"SEO Title, Introduction (~{section_word_counts['intro']} words), "
+              f"Main Body Copy (~{section_word_counts['main_body']} words), "
+              f"Conclusion (~{section_word_counts['conclusion']} words).")
+
+    if include_cta:
+        prompt += f" End with a Call to Action: '{cta_text}'."
     
     try:
-        completion = client.chat.completions.create(
-            model='gpt-4',  # Assuming using GPT-4, adjust as necessary
-            messages=messages
+        completion = client.completions.create(
+            prompt=prompt,
+            model="gpt-4",  # Adjust based on availability and your specific needs
+            max_tokens=length * 5,  # Rough estimate to ensure enough content is generated
+            temperature=0.7,  # Adjust for creativity
+            top_p=1.0,
+            frequency_penalty=0,
+            presence_penalty=0
         )
-        return completion.choices[0].message.content
+        return completion.choices[0].text.strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-if st.button('Generate Blog Post'):
-    if blog_topic and main_keywords and blog_length:
-        with st.spinner('Generating blog post...'):
-            blog_post = generate_blog_post(blog_topic, main_keywords, blog_length)
-            st.session_state['generate_blog_pressed'] = True
-            st.subheader('Generated Blog Post:')
-            st.write(blog_post)
-    else:
-        st.warning('Please enter a blog topic, main keywords, and desired blog length.')
+# Streamlit UI for input
+keyword = st.text_input('Enter your target keyword here:')
+url = st.text_input('Enter a reference URL here:')
+blog_length = st.selectbox('Choose the blog length:', [350, 700, 1250])
+include_cta = st.checkbox('Include a Call to Action?')
+cta_text = st.text_input('Enter your Call to Action text here:') if include_cta else ""
 
-# Ensure there are no repeated declarations or sensitive information like API keys hardcoded in your script.
+if st.button('Generate Blog Content'):
+    blog_content = generate_structured_blog(keyword, url, blog_length, include_cta, cta_text)
+    st.text_area("Generated Blog Content:", value=blog_content, height=250)
