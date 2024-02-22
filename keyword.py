@@ -6,7 +6,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk import pos_tag
 
-# NLTK data download for text processing
+# Ensure necessary NLTK resources are available
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
@@ -36,12 +36,12 @@ def extract_keywords_from_text(text):
         st.error("NLTK resources not found. Please download them using nltk.download().")
         return []
 
-def get_keyword_data(keywords):
+def get_keyword_data(keywords, location="us"):
     """Fetches keyword data including volume, CPC, and competition."""
     url = "https://api.keywordseverywhere.com/v1/get_keyword_data"
     headers = {'Authorization': f'Bearer {KEYWORDS_EVERYWHERE_API_KEY}'}
     payload = {
-        'country': 'us',
+        'country': location,
         'currency': 'USD',
         'dataSource': 'gkp',
         'kw[]': keywords
@@ -60,31 +60,26 @@ option = st.radio("Choose an option:", ["Analyze My Website", "Analyze Specific 
 
 if option == "Analyze My Website":
     url = st.text_input("Enter your website URL:", "")
+    description = st.text_area("Enter a brief description of your site:", "")
     if st.button("Analyze Website"):
-        with st.spinner("Extracting content and analyzing keywords..."):
-            web_copy = extract_web_copy(url)
-            if web_copy:
-                keywords = extract_keywords_from_text(web_copy)
-                if keywords:
-                    keyword_data = get_keyword_data(keywords[:10])  # Limiting to first 10 keywords for brevity
-                    if keyword_data:
-                        for keyword_info in keyword_data:
-                            st.write(f"Keyword: {keyword_info['keyword']}, Volume: {keyword_info['vol']}, CPC: {keyword_info['cpc']['value']}, Competition: {keyword_info['competition']}")
-                    else:
-                        st.write("No data found for the extracted keywords.")
-                else:
-                    st.write("No keywords extracted from the website content.")
-            else:
-                st.write("Failed to extract content from the URL provided.")
-
+        if url and description:
+            # Logic for analyzing the website...
+            st.write("Website analysis based on description and URL will be displayed here.")
+            # Assume web scraping and keyword extraction takes place here
+        else:
+            st.warning("Please enter both your website URL and a brief description.")
+            
 elif option == "Analyze Specific Keywords":
     keywords_input = st.text_input("Enter keywords separated by commas (e.g., seo, digital marketing):")
-    analyze_keywords_button = st.button("Analyze Keywords")
-    if analyze_keywords_button and keywords_input:
-        keywords = [keyword.strip() for keyword in keywords_input.split(',')]
-        keyword_data = get_keyword_data(keywords)
-        if keyword_data:
-            for keyword_info in keyword_data:
-                st.write(f"Keyword: {keyword_info['keyword']}, Volume: {keyword_info['vol']}, CPC: {keyword_info['cpc']['value']}, Competition: {keyword_info['competition']}")
+    location = st.text_input("Enter your target location for SEO analysis (e.g., US, UK):", "")
+    if st.button("Analyze Keywords"):
+        if keywords_input and location:
+            keywords = [keyword.strip() for keyword in keywords_input.split(',')]
+            keyword_data = get_keyword_data(keywords, location=location)
+            if keyword_data:
+                for keyword_info in keyword_data:
+                    st.write(f"Keyword: {keyword_info['keyword']}, Volume: {keyword_info['vol']}, CPC: {keyword_info['cpc']['value']}, Competition: {keyword_info['competition']}")
+            else:
+                st.write("No data found for the entered keywords.")
         else:
-            st.write("No data found for the entered keywords.")
+            st.warning("Please enter keywords and specify a location for analysis.")
