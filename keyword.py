@@ -22,8 +22,8 @@ def init_search_console_service(api_key):
 # Function to fetch top search queries from Google Search Console
 def fetch_top_search_queries(service, site_url):
     query_request = {
-        'startDate': '2022-01-01',  # Example start date, adjust as needed
-        'endDate': '2022-12-31',    # Example end date, adjust as needed
+        'startDate': '2024-01-01',  # Example start date, adjust as needed
+        'endDate': '2024-12-31',    # Example end date, adjust as needed
         'dimensions': ['query'],
         'rowLimit': 10  # Fetches top 10 queries
     }
