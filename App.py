@@ -99,14 +99,13 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
     The site currently ranks {ranking} for the keyword '{main_keyword}'.
     Content (trimmed for brevity): {content[:500]}...
     Headings: {", ".join(headings)}
-    Meta Description: {meta_description}
+    Meta Description: {meta_description}"
 
-    Provide a structured analysis with sections on:
+    f"Provide a structured analysis with sections on:
     1. What is currently working well for SEO and why.
     2. What isn't working well for SEO and why.
     3. Detailed and actionable recommendations for improving SEO ranking for '{main_keyword}'.
-    4. Keyword opportunities based on the analysis.
-    "
+    4. Keyword opportunities based on the analysis."
         )
     
     messages = [
