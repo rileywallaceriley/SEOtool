@@ -9,6 +9,10 @@ logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
 st.image(logo_url, width=200)
 st.title('RepuSEO-Helper')
 
+# Define your Google API key and CSE ID here
+google_api_key = 'AIzaSyC0qDb3rdkRKxFrMaFyyDPMqBMYtOrrC4c'
+google_cse_id = '34200d9d3c6084a1f'
+
 # Retrieve API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
