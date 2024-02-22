@@ -1,11 +1,13 @@
 import streamlit as st
 import requests
-from bs4 import BeautifulSoup
 import os
 import nltk
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk import pos_tag
+from bs4 import BeautifulSoup
+
+# NLTK Data Download
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('stopwords')
 
 # Assuming you've set your API key as an environment variable
 KEYWORDS_EVERYWHERE_API_KEY = os.getenv("KEYWORDS_EVERYWHERE_API_KEY")
