@@ -95,8 +95,7 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
         prompt = f"Compose a 300-word SEO-rich blog post meant to seed (link) into the page with the following content: {content_preview}"
     else:
         prompt = (
-            prompt = f"""
-    Analyze the provided content, headings, and meta description for the website {url} with SEO in mind. 
+            prompt = f"Analyze the provided content, headings, and meta description for the website {url} with SEO in mind. 
     The site currently ranks {ranking} for the keyword '{main_keyword}'.
     Content (trimmed for brevity): {content[:500]}...
     Headings: {", ".join(headings)}
@@ -107,7 +106,7 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
     2. What isn't working well for SEO and why.
     3. Detailed and actionable recommendations for improving SEO ranking for '{main_keyword}'.
     4. Keyword opportunities based on the analysis.
-    """
+    "
         )
     
     messages = [
