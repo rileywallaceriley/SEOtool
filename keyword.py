@@ -36,16 +36,15 @@ def extract_keywords_from_text(text):
         st.error("NLTK resources not found. Please download them using nltk.download().")
         return []
 
-def get_keyword_data(keywords, location="Canada"):
+def get_keyword_data(keywords, location="CA"):
     """Fetches keyword data including volume, CPC, and competition."""
     url = "https://api.keywordseverywhere.com/v1/get_keyword_data"
     headers = {'Authorization': f'Bearer {KEYWORDS_EVERYWHERE_API_KEY}'}
-    localized_keywords = [f"{keyword} in {location}" for keyword in keywords]
     payload = {
-        'country': 'CA',  # Set to Canada
+        'country': location,  # Set to Canada
         'currency': 'CAD',
         'dataSource': 'gkp',
-        'kw[]': localized_keywords
+        'kw[]': keywords
     }
     response = requests.post(url, headers=headers, json=payload)
     if response.status_code == 200:
@@ -66,7 +65,7 @@ if option == "Analyze My Website":
         if url and description:
             web_copy = extract_web_copy(url)
             keywords = extract_keywords_from_text(web_copy + " " + description)
-            keyword_data = get_keyword_data(keywords[:10], "Canada")
+            keyword_data = get_keyword_data(keywords[:10], "CA")
             if keyword_data:
                 for keyword_info in keyword_data:
                     st.write(f"Keyword: {keyword_info['keyword']}, Volume: {keyword_info['vol']}, CPC: {keyword_info['cpc']['value']}, Competition: {keyword_info['competition']}")
@@ -77,11 +76,10 @@ if option == "Analyze My Website":
 
 elif option == "Analyze Specific Keywords":
     keywords_input = st.text_input("Enter keywords separated by commas (e.g., seo, digital marketing):")
-    city_name = st.text_input("Enter a Canadian city for more localized analysis (e.g., Toronto):", "Canada")
     if st.button("Analyze Keywords"):
         if keywords_input:
             keywords = [keyword.strip() for keyword in keywords_input.split(',')]
-            keyword_data = get_keyword_data(keywords, city_name)
+            keyword_data = get_keyword_data(keywords, "CA")
             if keyword_data:
                 for keyword_info in keyword_data:
                     st.write(f"Keyword: {keyword_info['keyword']}, Volume: {keyword_info['vol']}, CPC: {keyword_info['cpc']['value']}, Competition: {keyword_info['competition']}")
