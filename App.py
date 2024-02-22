@@ -83,7 +83,7 @@ def analyze_keywords(content, keyword):
 
     return keyword_suggestions, keyword_competition
 
-def get_recommendations(content, ranking, url, engine='gpt-4', main_keyword):
+def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4'):
     # Determine the emoji reaction based on the current ranking
     if ranking == 1:
         emoji = "🥇"
