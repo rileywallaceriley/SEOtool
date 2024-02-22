@@ -95,12 +95,19 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
         prompt = f"Compose a 300-word SEO-rich blog post meant to seed (link) into the page with the following content: {content_preview}"
     else:
         prompt = (
-            f"Website URL: {url}\n"
-            f"Content Preview (first 500 characters): {content_preview}\n"
-            f"Current SEO Ranking: {ranking}\n\n"
-            "Provide specific and actionable SEO recommendations based on the content preview and current SEO ranking. "
-            "Avoid general concepts and provide direct recommendations on how to update the main copy, meta tags, and any other on-page elements to improve SEO performance, for example, show the current copy and explain exactly where to make changes. "
-            "Note: The main keyword should be strategically included in the content, but avoid recommendations that merely state to include the main keyword."
+            prompt = f"""
+    Analyze the provided content, headings, and meta description for the website {url} with SEO in mind. 
+    The site currently ranks {ranking} for the keyword '{main_keyword}'.
+    Content (trimmed for brevity): {content[:500]}...
+    Headings: {", ".join(headings)}
+    Meta Description: {meta_description}
+
+    Provide a structured analysis with sections on:
+    1. What is currently working well for SEO and why.
+    2. What isn't working well for SEO and why.
+    3. Detailed and actionable recommendations for improving SEO ranking for '{main_keyword}'.
+    4. Keyword opportunities based on the analysis.
+    """
         )
     
     messages = [
