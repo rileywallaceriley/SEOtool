@@ -142,10 +142,10 @@ location = st.text_input('Enter your location (e.g., "New York, USA") here:')
 if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
-            # Existing analyze functionality
             ranking = get_google_search_results(keyword, url, location)
             content = scrape_content(url)
-            recommendations = get_recommendations(content, ranking, url)
+            # Adjusted to pass 'keyword' as 'main_keyword'
+            recommendations = get_recommendations(content, ranking, url, keyword)  # Note the inclusion of 'keyword'
             
             if ranking is not None and ranking <= 50:
                 st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
