@@ -83,10 +83,10 @@ def analyze_keywords(content, keyword):
 
     return keyword_suggestions, keyword_competition
 
-def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'):
+def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     
-    # Modify the prompt based on the purpose
+    # Assuming 'headings' and 'meta_description' are defined or passed in elsewhere in your actual code
     prompt = f"Analyze the provided content, headings, and meta description for the website {url} with SEO in mind. "\
              f"The site currently ranks {ranking} for the keyword '{main_keyword}'. "\
              f"Content (trimmed for brevity): {content_preview}\n"\
@@ -97,13 +97,12 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
              "2. What isn't working well for SEO and why.\n"\
              "3. Detailed and actionable recommendations for improving SEO ranking for '{main_keyword}'.\n"\
              "4. Keyword opportunities based on the analysis."
-    
+             
     messages = [
         {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
         {"role": "user", "content": prompt}
     ]
 
-    
     try:
         completion = client.chat.completions.create(
             model=engine,
