@@ -83,61 +83,39 @@ def analyze_keywords(content, keyword):
 
     return keyword_suggestions, keyword_competition
 
-def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4'):
-    # Ensure ranking is an integer or set to a default value if None or not an integer
-    try:
-        ranking_int = int(ranking)
-    except (ValueError, TypeError):
-        ranking_int = 101  # Assign a default value that indicates 'not ranked' or 'beyond top 100'
-
-    # Determine the emoji reaction based on the current ranking
-    emoji = "🔍"  # Default emoji for not ranked or beyond top 50
-    if ranking_int == 1:
-        emoji = "🥇"  # Top rank
-    elif ranking_int <= 10:
-        emoji = "🎉"  # Top 10
-    elif ranking_int <= 50:
-        emoji = "👍"  # Top 50
-
+def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     
-    prompt = f"""
-    {emoji} Current ranking for the keyword '{main_keyword}': {ranking_int}
-
-    ## Where you're at
-    Analyze the following content from the website {url} with a focus on SEO. The content preview is: {content_preview}. The site currently ranks {ranking_int} for '{main_keyword}'. Provide an insightful analysis of what is currently working for their SEO and why, and what isn't working and why. Ensure the tone is positive and insightful.
-
-    ## Recommendations
-    Based on the analysis, list specific, detailed, and thorough recommendations on how to improve the site's SEO ranking for '{main_keyword}'. Recommendations should be in a bulleted list format and provide a clear roadmap for improvement.
-
-    ## Keyword opportunities
-    Considering the recommendations and current strengths, suggest solid keyword additions for '{main_keyword}'. Include detailed logic for each suggestion so the user understands why they should include them in their SEO strategy.
-    """
-
-    try:
-        response = openai.Completion.create(
-            engine=engine,
-            prompt=prompt,
-            temperature=0.5,
-            max_tokens=1500,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
+    # Modify the prompt based on the purpose
+    if purpose == 'refresh_meta':
+        prompt = f"Generate an SEO-rich meta description for the following content: {content_preview}"
+    elif purpose == 'refresh_main_copy':
+        prompt = f"Provide SEO touch copy updates for the following content: {content_preview}"
+    elif purpose == 'write_seeder_post':
+        prompt = f"Compose a 300-word SEO-rich blog post meant to seed (link) into the page with the following content: {content_preview}"
+    else:
+        prompt = (
+            f"Website URL: {url}\n"
+            f"Content Preview (first 500 characters): {content_preview}\n"
+            f"Current SEO Ranking: {ranking}\n\n"
+            "Provide specific and actionable SEO recommendations based on the content preview and current SEO ranking. "
+            "Avoid general concepts and provide direct recommendations on how to update the main copy, meta tags, and any other on-page elements to improve SEO performance, for example, show the current copy and explain exactly where to make changes. "
+            "Note: The main keyword should be strategically included in the content, but avoid recommendations that merely state to include the main keyword."
         )
-        return response.choices[0].text.strip()
+    
+    messages = [
+        {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
+        {"role": "user", "content": prompt}
+    ]
+    
+    try:
+        completion = client.chat.completions.create(
+            model=engine,
+            messages=messages
+        )
+        return completion.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}"
-
-
-def format_openai_response(response_text):
-    """
-    Formats the OpenAI response to ensure it follows the structured output.
-    This could involve parsing the response text and organizing it according to the specified headings.
-    """
-    # For simplicity, this example will return the response directly,
-    # but you could add parsing logic here to structure it as needed.
-    return response_text
-
         
 
 # Streamlit UI for input fields
@@ -148,10 +126,10 @@ location = st.text_input('Enter your location (e.g., "New York, USA") here:')
 if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
+            # Existing analyze functionality
             ranking = get_google_search_results(keyword, url, location)
             content = scrape_content(url)
-            # Adjusted to pass 'keyword' as 'main_keyword'
-            recommendations = get_recommendations(content, ranking, url, keyword)  # Note the inclusion of 'keyword'
+            recommendations = get_recommendations(content, ranking, url)
             
             if ranking is not None and ranking <= 50:
                 st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
