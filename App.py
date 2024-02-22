@@ -84,23 +84,28 @@ def analyze_keywords(content, keyword):
     return keyword_suggestions, keyword_competition
 
 def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4'):
+    # Ensure ranking is an integer or set to a default value if None or not an integer
+    try:
+        ranking_int = int(ranking)
+    except (ValueError, TypeError):
+        ranking_int = 101  # Assign a default value that indicates 'not ranked' or 'beyond top 100'
+
     # Determine the emoji reaction based on the current ranking
-    if ranking == 1:
-        emoji = "🥇"
-    elif ranking <= 10:
-        emoji = "🎉"
-    elif ranking <= 50:
-        emoji = "👍"
-    else:
-        emoji = "🔍"
+    emoji = "🔍"  # Default emoji for not ranked or beyond top 50
+    if ranking_int == 1:
+        emoji = "🥇"  # Top rank
+    elif ranking_int <= 10:
+        emoji = "🎉"  # Top 10
+    elif ranking_int <= 50:
+        emoji = "👍"  # Top 50
 
     content_preview = (content[:500] + '...') if len(content) > 500 else content
     
     prompt = f"""
-    {emoji} Current ranking for the keyword '{main_keyword}': {ranking}
+    {emoji} Current ranking for the keyword '{main_keyword}': {ranking_int}
 
     ## Where you're at
-    Analyze the following content from the website {url} with a focus on SEO. The content preview is: {content_preview}. The site currently ranks {ranking} for '{main_keyword}'. Provide an insightful analysis of what is currently working for their SEO and why, and what isn't working and why. Ensure the tone is positive and insightful.
+    Analyze the following content from the website {url} with a focus on SEO. The content preview is: {content_preview}. The site currently ranks {ranking_int} for '{main_keyword}'. Provide an insightful analysis of what is currently working for their SEO and why, and what isn't working and why. Ensure the tone is positive and insightful.
 
     ## Recommendations
     Based on the analysis, list specific, detailed, and thorough recommendations on how to improve the site's SEO ranking for '{main_keyword}'. Recommendations should be in a bulleted list format and provide a clear roadmap for improvement.
@@ -119,9 +124,10 @@ def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4'):
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
-        return format_openai_response(response["choices"][0]["text"])
+        return response.choices[0].text.strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
+
 
 def format_openai_response(response_text):
     """
