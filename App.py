@@ -100,7 +100,8 @@ def get_recommendations(content, ranking, url, engine='gpt-4', purpose='general'
             f"Current SEO Ranking: {ranking}\n\n"
             "Provide specific and actionable SEO recommendations based on the content preview and current SEO ranking. "
             "Avoid general concepts and provide direct recommendations on how to update the main copy, meta tags, and any other on-page elements to improve SEO performance, for example, show the current copy and explain exactly where to make changes. "
-            "Note: The main keyword should be strategically included in the content, but avoid recommendations that merely state to include the main keyword."
+            "Note: The main keyword should be strategically included in the content, but avoid recommendations that merely state to include the main keyword. "
+            "Additionally, include a section at teh bottom titled 'Keyword Opportunities'. Here you shoudl offer additional keyword that woudl be beneficial to focus on. For example, If the keyword was permanent jewellery, suggestions could include welded bracelets or forever bracelets. The results shoudl be specific and include some short added logic for each suggestion. "
         )
     
     messages = [
