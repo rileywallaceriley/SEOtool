@@ -6,12 +6,12 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk import pos_tag
 
-# Download necessary NLTK resources
+# NLTK data download for text processing
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
 
-# Use API key from Streamlit secrets
+# Using the Keywords Everywhere API key from Streamlit's secrets
 KEYWORDS_EVERYWHERE_API_KEY = st.secrets["keywords_everywhere_api_key"]
 
 def extract_web_copy(url):
@@ -39,23 +39,21 @@ def extract_keywords_from_text(text):
 def get_keyword_data(keywords):
     """Fetches keyword data including volume, CPC, and competition."""
     url = "https://api.keywordseverywhere.com/v1/get_keyword_data"
-    headers = {
-        'Authorization': f'Bearer {KEYWORDS_EVERYWHERE_API_KEY}'
-    }
-    data = {
+    headers = {'Authorization': f'Bearer {KEYWORDS_EVERYWHERE_API_KEY}'}
+    payload = {
         'country': 'us',
         'currency': 'USD',
         'dataSource': 'gkp',
         'kw[]': keywords
     }
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json=payload)
     if response.status_code == 200:
-        return response.json()['data']
+        return response.json().get('data', [])
     else:
         st.error("Failed to fetch keyword data.")
         return []
 
-# Streamlit UI setup
+# Streamlit UI
 st.title("SEO Keyword Analysis Tool")
 
 url = st.text_input("Enter your website URL:", "")
