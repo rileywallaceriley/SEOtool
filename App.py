@@ -22,7 +22,36 @@ if not openai_api_key:
 # Create an OpenAI client instance
 openai_client = OpenAI(api_key=openai_api_key)
 
-# Function definitions for get_google_search_results, scrape_content
+def get_google_search_results(query, site_url, location):
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        'q': query,
+        'cx': google_cse_id,
+        'key': google_api_key,
+        'num': 10,
+        'gl': location
+    }
+    ranking = None
+    for start_index in range(1, 51, 10):
+        params['start'] = start_index
+        response = requests.get(url, params=params)
+        results = response.json()
+
+        for i, item in enumerate(results.get('items', [])):
+            if site_url in item.get('link'):
+                ranking = i + 1 + start_index - 1
+                return ranking
+    return None
+def scrape_content(url):
+    if not url.startswith(('http://', 'https://')):
+        url = 'http://' + url
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    content = soup.find('main').text if soup.find('main') else 'Main content not found'
+    headings = [h.text for h in soup.find_all(['h1', 'h2', 'h3'])]
+    meta_description = soup.find('meta', attrs={'name': 'description'})
+    meta_description_content = meta_description['content'] if meta_description else 'Meta description not found'
+    return content, headings, meta_description_content
 
 def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
