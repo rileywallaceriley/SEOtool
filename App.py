@@ -37,7 +37,10 @@ def get_google_search_results(query, site_url, location):
         results = response.json()
 
         for i, item in enumerate(results.get('items', [])):
-            if site_url in item.get('link'):
+            item_link = item.get('link')
+            # Debugging log
+            print(f"Checking URL: {item_link} at position: {i + start_index}")
+            if site_url == item_link or site_url == item_link.rstrip('/'):  # Improved URL matching
                 ranking = i + 1 + start_index - 1
                 return ranking
     return None
