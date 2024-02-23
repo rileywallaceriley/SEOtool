@@ -125,7 +125,7 @@ if st.button('Analyze'):
             if ranking is not None:
                 st.markdown(f'## Your site is ranked {ranking} for the keyword "{keyword}" in {location}.')
             else:
-                st.write('Loading your recommendations...')
+                st.write('Your site was not found in the top 50 results or an error occurred. Proceeding with recommendations...')
             
             # Proceed with SEO analysis and recommendations regardless of ranking
             content, headings, meta_description = scrape_content(url)
@@ -136,59 +136,53 @@ if st.button('Analyze'):
             else:
                 st.write("Unable to generate SEO recommendations.")
 
-            # Commented out the keyword suggestion and volume fetching logic
-            # suggested_keywords = suggest_new_keywords(content, keyword)
-            # if suggested_keywords:
-            #     keyword_volume_data = fetch_keyword_volumes(suggested_keywords)
-            #     st.markdown('## Suggested Keywords and Their Search Volumes:')
-            #     for data in keyword_volume_data:
-            #         st.markdown(f"### Keyword: {data['keyword']}, Volume: {data['vol']}, CPC: {data['cpc']['value']}, Competition: {data['competition']}")
-            # else:
-            #     st.write("No new keyword suggestions were generated.")
+    # Ensure this is outside the 'if url and keyword and location:' check
+    # so it appears regardless of whether the user has initiated an analysis
     else:
         st.warning('Please enter a URL, a keyword, and a location.')
+
 # Define a function to display each tool section with centered title and description
-        def display_tool_section(header, description, button_label, button_url):
-            with st.container():
-                # Use HTML to center the header and description
-                st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
-                st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
-                
-                # Centered button with HTML
-                button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
-                st.markdown(button_html, unsafe_allow_html=True)
-                
-                # Divider
-                st.markdown("---")
-
-        # Tool descriptions
+def display_tool_section(header, description, button_label, button_url):
+    with st.container():
+        # Use HTML to center the header and description
+        st.markdown(f"<h3 style='text-align: center;'>{header}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
+        
+        # Centered button with HTML
+        button_html = f"""<div style="text-align: center;"><a href="{button_url}" target="_blank"><button style='margin-top: 10px; width: auto; padding: 10px 20px; border-radius: 5px; border: none; color: black; background-color: #f4a261;'>{button_label}</button></a></div>"""
+        st.markdown(button_html, unsafe_allow_html=True)
+        
+        # Divider
         st.markdown("---")
-        tools = [
-            {
-                "header": "RepuSEO-Helper",
-                "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-                "button_label": "Use Now - RepuSEO-Helper",
-                "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-            },
-            {
-                "header": "Blog SEO Helper",
-                "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
-                "button_label": "Use Now - Blog SEO Helper",
-                "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
-            },
-            {
-                "header": "RepuSEO Plagiarism Checker",
-                "description": "Ensure the originality of your content with our advanced plagiarism detection tool.",
-                "button_label": "Use Now - RepuSEO Plagiarism Checker",
-                "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
-            },
-        ]
 
-        # Displaying the tool sections
-        for tool in tools:
-            display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+# Tool descriptions
+st.markdown("---")
+tools = [
+    {
+        "header": "RepuSEO-Helper",
+        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
+        "button_label": "Use Now - RepuSEO-Helper",
+        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
+    },
+    {
+        "header": "Blog SEO Helper",
+        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
+        "button_label": "Use Now - Blog SEO Helper",
+        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
+    },
+    {
+        "header": "RepuSEO Plagiarism Checker",
+        "description": "Ensure the originality of your content with our advanced plagiarism detection tool.",
+        "button_label": "Use Now - RepuSEO Plagiarism Checker",
+        "button_url": "https://seotool-cdjzyqj4qrskqvkuahwjwm.streamlit.app"
+    },
+]
 
-    # Adjusting columns for responsive image display at the bottom
-    left_column, image_column, right_column = st.columns([1, 10, 1])
-    with image_column:
-        st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
+# Displaying the tool sections
+for tool in tools:
+    display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
+
+# Adjusting columns for responsive image display at the bottom
+left_column, image_column, right_column = st.columns([1, 10, 1])
+with image_column:
+    st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
