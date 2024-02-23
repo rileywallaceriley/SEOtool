@@ -107,13 +107,18 @@ if st.button('Analyze'):
 
                # Tool descriptions and display logic
                 tools = [
-                    {
-                        "header": "RepuSEO-Helper",
-                        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-                        "button_label": "Use Now - RepuSEO-Helper",
-                        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
-                    },
-                    # Add more tools here
+                   {
+        "header": "Competitive Edge",
+        "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
+        "button_label": "Use Now - Competitive Edge",
+        "button_url": "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app"
+    },
+    {
+        "header": "Blog SEO Helper",
+        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
+        "button_label": "Use Now - Blog SEO Helper",
+        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
+    },
                 ]
 
                 for tool in tools:
