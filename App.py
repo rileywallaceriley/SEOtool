@@ -105,7 +105,7 @@ if st.button('Analyze'):
                         st.markdown(button_html, unsafe_allow_html=True)
                         st.markdown("---")
 
-                # Tool descriptions and display logic
+               # Tool descriptions and display logic
                 tools = [
                     {
                         "header": "RepuSEO-Helper",
@@ -120,8 +120,8 @@ if st.button('Analyze'):
                     display_tool_section(tool['header'], tool['description'], tool['button_label'], tool['button_url'])
 
                 # Adjusting columns for responsive image display at the bottom
-                left_column, right_column = st.columns([1, 10, 1])
-                with right_column:
+                left_column, image_column, right_column = st.columns([1, 10, 1])
+                with image_column:
                     st.image("https://i.ibb.co/pxcB74N/Analysis.png", use_column_width=True)
     else:
         st.warning('Please enter a URL, a keyword, and a location.')
