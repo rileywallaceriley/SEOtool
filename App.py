@@ -53,7 +53,6 @@ def scrape_content(url):
     meta_description = soup.find('meta', attrs={'name': 'description'})
     meta_description_content = meta_description['content'] if meta_description else 'Meta description not found'
     return content, headings, meta_description_content
-# Continue from the previous part...
 
 # Keywords Everywhere API Key
 keywords_everywhere_api_key = os.getenv("KEYWORDS_EVERYWHERE_API_KEY")
@@ -100,8 +99,8 @@ def fetch_keyword_volumes(keywords):
     url = "https://api.keywordseverywhere.com/v1/get_keyword_data"
     headers = {'Authorization': f'Bearer {keywords_everywhere_api_key}'}
     payload = {
-        'country': 'US',  # Adjust as needed
-        'currency': 'USD',  # Adjust as needed
+        'country': 'CA',  # Adjust as needed
+        'currency': 'CAD',  # Adjust as needed
         'dataSource': 'gkp',
         'kw[]': keywords
     }
@@ -121,19 +120,30 @@ if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
             ranking = get_google_search_results(keyword, url, location)
-            content, _, _ = scrape_content(url)
             
+            # After fetching the site ranking
             if ranking is not None:
                 st.markdown(f'## Your site is ranked {ranking} for the keyword "{keyword}" in {location}.')
-                suggested_keywords = suggest_new_keywords(content, keyword)
-                if suggested_keywords:
-                    keyword_volume_data = fetch_keyword_volumes(suggested_keywords)
-                    st.markdown('## Suggested Keywords and Their Search Volumes:')
-                    for data in keyword_volume_data:
-                        st.markdown(f"### Keyword: {data['keyword']}, Volume: {data['vol']}, CPC: {data['cpc']['value']}, Competition: {data['competition']}")
-                else:
-                    st.write("No new keyword suggestions were generated.")
             else:
-                st.write('Your site was not found in the top 50 results.')
+                st.write('Your site was not found in the top 50 results or an error occurred. Proceeding with recommendations...')
+            
+            # Proceed with SEO analysis and recommendations regardless of ranking
+            content, headings, meta_description = scrape_content(url)
+            seo_recommendations = get_recommendations(content, ranking if ranking is not None else "Not found", url, keyword)
+            if seo_recommendations:
+                st.markdown('## SEO Recommendations:')
+                st.markdown(seo_recommendations)
+            else:
+                st.write("Unable to generate SEO recommendations.")
+
+            # Suggest new keywords and fetch their volumes
+            suggested_keywords = suggest_new_keywords(content, keyword)
+            if suggested_keywords:
+                keyword_volume_data = fetch_keyword_volumes(suggested_keywords)
+                st.markdown('## Suggested Keywords and Their Search Volumes:')
+                for data in keyword_volume_data:
+                    st.markdown(f"### Keyword: {data['keyword']}, Volume: {data['vol']}, CPC: {data['cpc']['value']}, Competition: {data['competition']}")
+            else:
+                st.write("No new keyword suggestions were generated.")
     else:
         st.warning('Please enter a URL, a keyword, and a location.')
