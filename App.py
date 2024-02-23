@@ -114,7 +114,6 @@ url = st.text_input('Enter your URL here:')
 keyword = st.text_input('Enter your target keyword here:')
 location = st.text_input('Enter your location (e.g., "Toronto, Canada") here:')
 
-if # Assuming `keyword_volume_data` is fetched as shown in previous examples
 if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
