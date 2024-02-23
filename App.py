@@ -53,7 +53,7 @@ def scrape_content(url):
     meta_description = soup.find('meta', attrs={'name': 'description'})
     meta_description_content = meta_description['content'] if meta_description else 'Meta description not found'
     return content, headings, meta_description_content
-    # Continue from the previous part...
+# Continue from the previous part...
 
 # Keywords Everywhere API Key
 keywords_everywhere_api_key = os.getenv("KEYWORDS_EVERYWHERE_API_KEY")
@@ -136,4 +136,4 @@ if st.button('Analyze'):
             else:
                 st.write('Your site was not found in the top 50 results.')
     else:
-      st.warning('Please enter a URL, a keyword, and a location.')
+        st.warning('Please enter a URL, a keyword, and a location.')
