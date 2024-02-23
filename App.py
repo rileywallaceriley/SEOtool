@@ -159,10 +159,10 @@ def display_tool_section(header, description, button_label, button_url):
 st.markdown("---")
 tools = [
     {
-        "header": "RepuSEO-Helper",
-        "description": "Receive personalized SEO recommendations to improve your site's ranking and user experience.",
-        "button_label": "Use Now - RepuSEO-Helper",
-        "button_url": "https://seotool-qpb8fq8bygcusdsxn6pm6s.streamlit.app"
+        "header": "Competitive Edge",
+        "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
+        "button_label": "Use Now - Competitive Edge",
+        "button_url": "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app"
     },
     {
         "header": "Blog SEO Helper",
