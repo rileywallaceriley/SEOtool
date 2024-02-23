@@ -95,6 +95,9 @@ if st.button('Analyze'):
             if seo_recommendations:
                 st.markdown('## SEO Recommendations:')
                 st.markdown(seo_recommendations)
+
+  # Divider
+        st.markdown("---")
                 
                 # Define a function to display each tool section with centered title and description
                 def display_tool_section(header, description, button_label, button_url):
