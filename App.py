@@ -87,7 +87,7 @@ location = st.text_input('Enter your location (e.g., "Toronto, Canada") here:')
 if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
-            # Assuming variables and logic for ranking and content fetching are defined above
+            # SEO analysis logic
             ranking = get_google_search_results(keyword, url, location)
             content, _, _ = scrape_content(url)
             seo_recommendations = get_recommendations(content, ranking if ranking is not None else "Not found", url, keyword)
@@ -95,11 +95,10 @@ if st.button('Analyze'):
             if seo_recommendations:
                 st.markdown('## SEO Recommendations:')
                 st.markdown(seo_recommendations)
-                  # Divider
-        st.markdown("---")
 
-  
-                
+                # Divider
+                st.markdown("---")
+
                 # Define a function to display each tool section with centered title and description
                 def display_tool_section(header, description, button_label, button_url):
                     with st.container():
@@ -109,20 +108,20 @@ if st.button('Analyze'):
                         st.markdown(button_html, unsafe_allow_html=True)
                         st.markdown("---")
 
-               # Tool descriptions and display logic
+                # Tool descriptions and display logic
                 tools = [
-                   {
-        "header": "Competitive Edge",
-        "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
-        "button_label": "Use Now - Competitive Edge",
-        "button_url": "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app"
-    },
-    {
-        "header": "Blog SEO Helper",
-        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
-        "button_label": "Use Now - Blog SEO Helper",
-        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
-    },
+                    {
+                        "header": "Competitive Edge",
+                        "description": "Analyze and apply winning SEO strategies from your competitors directly into your campaign.",
+                        "button_label": "Use Now - Competitive Edge",
+                        "button_url": "https://seotool-mfvdnqmf32f3visjegsxho.streamlit.app"
+                    },
+                    {
+                        "header": "Blog SEO Helper",
+                        "description": "Elevate your blog's visibility with targeted SEO strategies designed for maximum engagement.",
+                        "button_label": "Use Now - Blog SEO Helper",
+                        "button_url": "https://seotool-7uqzcambnfjnuuwh9pctlr.streamlit.app"
+                    },
                 ]
 
                 for tool in tools:
