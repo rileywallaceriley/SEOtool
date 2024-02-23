@@ -61,14 +61,22 @@ def scrape_content(url):
     return content, headings, meta_description_content, image_alts
 
 
-def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4', purpose='general'):
+def get_recommendations(content, ranking, url, main_keyword, image_alts, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
-    headings, meta_description = scrape_content(url)[1:]
-    prompt = f"Analyze the provided content, headings, and meta description for the website {url} with SEO in mind. "\
+    headings, meta_description = scrape_content(url)[:2]  # Adjusted for the added image_alts return value
+
+    # Analyze alt tags to highlight the good and what could be improved
+    alt_tag_summary = "Alt tags are used effectively for some images, enhancing SEO and accessibility. However, there are opportunities to improve alt text to be more descriptive and keyword-rich where appropriate."
+    missing_alts = sum(1 for _, alt in image_alts if alt == 'No alt attribute')
+    if missing_alts > 0:
+        alt_tag_summary += f" Notably, {missing_alts} images are missing alt tags, which is a missed opportunity for SEO and accessibility."
+
+    prompt = f"Analyze the provided content, headings, meta description, and alt tags for the website {url} with SEO in mind. "\
              f"The site currently ranks {ranking} for the keyword '{main_keyword}'. "\
              f"Content (trimmed for brevity): {content_preview}\n"\
              f"Headings: {', '.join(headings)}\n"\
-             f"Meta Description: {meta_description}\n\n"\
+             f"Meta Description: {meta_description}\n"\
+             f"Alt Tag Analysis: {alt_tag_summary}\n\n"\
              "Provide a structured analysis with sections on:\n"\
              "What is currently working well for SEO and why. [Try to sum up and explain what you feel their strategy currently is, and try to be complimentary where possible.] \n"\
              "What isn't working well for SEO and why. [This section should be as detailed as possible, citing specific example thing the page to ensure eteh reader fully grasps what is holding them back.] \n"\
