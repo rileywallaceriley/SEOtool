@@ -125,7 +125,7 @@ if st.button('Analyze'):
             if ranking is not None:
                 st.markdown(f'## Your site is ranked {ranking} for the keyword "{keyword}" in {location}.')
             else:
-                st.write('Your site was not found in the top 50 results or an error occurred. Proceeding with recommendations...')
+                st.write('Loading your recommendations...')
             
             # Proceed with SEO analysis and recommendations regardless of ranking
             content, headings, meta_description = scrape_content(url)
@@ -136,14 +136,14 @@ if st.button('Analyze'):
             else:
                 st.write("Unable to generate SEO recommendations.")
 
-            # Suggest new keywords and fetch their volumes
-            suggested_keywords = suggest_new_keywords(content, keyword)
-            if suggested_keywords:
-                keyword_volume_data = fetch_keyword_volumes(suggested_keywords)
-                st.markdown('## Suggested Keywords and Their Search Volumes:')
-                for data in keyword_volume_data:
-                    st.markdown(f"### Keyword: {data['keyword']}, Volume: {data['vol']}, CPC: {data['cpc']['value']}, Competition: {data['competition']}")
-            else:
-                st.write("No new keyword suggestions were generated.")
+            # Commented out the keyword suggestion and volume fetching logic
+            # suggested_keywords = suggest_new_keywords(content, keyword)
+            # if suggested_keywords:
+            #     keyword_volume_data = fetch_keyword_volumes(suggested_keywords)
+            #     st.markdown('## Suggested Keywords and Their Search Volumes:')
+            #     for data in keyword_volume_data:
+            #         st.markdown(f"### Keyword: {data['keyword']}, Volume: {data['vol']}, CPC: {data['cpc']['value']}, Competition: {data['competition']}")
+            # else:
+            #     st.write("No new keyword suggestions were generated.")
     else:
         st.warning('Please enter a URL, a keyword, and a location.')
