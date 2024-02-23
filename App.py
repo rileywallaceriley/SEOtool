@@ -47,11 +47,19 @@ def scrape_content(url):
         url = 'http://' + url
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
+
+    # Existing content scraping
     content = soup.find('main').text if soup.find('main') else 'Main content not found'
     headings = [h.text for h in soup.find_all(['h1', 'h2', 'h3'])]
     meta_description = soup.find('meta', attrs={'name': 'description'})
     meta_description_content = meta_description['content'] if meta_description else 'Meta description not found'
-    return content, headings, meta_description_content
+    
+    # New: Scrape images and their alt tags
+    images = soup.find_all('img')
+    image_alts = [(image.get('src'), image.get('alt', 'No alt attribute')) for image in images]
+
+    return content, headings, meta_description_content, image_alts
+
 
 def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
@@ -87,14 +95,18 @@ location = st.text_input('Enter your location (e.g., "Toronto, Canada") here:')
 if st.button('Analyze'):
     if url and keyword and location:
         with st.spinner('Analyzing...'):
-            # SEO analysis logic
             ranking = get_google_search_results(keyword, url, location)
-            content, _, _ = scrape_content(url)
-            seo_recommendations = get_recommendations(content, ranking if ranking is not None else "Not found", url, keyword)
+            content, headings, meta_description, image_alts = scrape_content(url)  # Adjusted to capture image_alts
+            # Adjust the get_recommendations call if necessary to pass image_alts or include in the analysis
+            
+            seo_recommendations = get_recommendations(content, ranking if ranking is not None else "Not found", url, keyword, image_alts=image_alts)  # Example modification
+            # Ensure get_recommendations is adjusted to accept and utilize the image_alts parameter
             
             if seo_recommendations:
                 st.markdown('## SEO Recommendations:')
                 st.markdown(seo_recommendations)
+                # Further processing and display logic...
+
 
                 # Divider
                 st.markdown("---")
