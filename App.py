@@ -69,10 +69,10 @@ def get_recommendations(content, ranking, url, main_keyword, engine='gpt-4', pur
              f"Headings: {', '.join(headings)}\n"\
              f"Meta Description: {meta_description}\n\n"\
              "Provide a structured analysis with sections on:\n"\
-             "1. What is currently working well for SEO and why.\n"\
-             "2. What isn't working well for SEO and why.\n"\
-             "3. Detailed and actionable recommendations for improving SEO ranking for '{main_keyword}'.\n"\
-             "4. Keyword opportunities based on the analysis."
+             "What is currently working well for SEO and why.\n"\
+             "What isn't working well for SEO and why.\n"\
+             "Detailed and actionable recommendations for improving SEO ranking for '{main_keyword}'. [this section should provide specific examples, whether that means pointing out specific places in the copy to insert keywords, or provide examples of rewritten header. Assume the reader isn't knowledgeable and provide a detailed explanation that shys away from simply giving jargon and demonstrates exactly what to change and adjust with direct examples using the actual copy from the website content provided.]\n"\
+             "Keyword opportunities based on the analysis. [in this section provide a brief intro, and break down the suggestion, providing some context and logixc as to why you're suggesting it]"
 
     try:
         response = openai_client.chat.completions.create(
