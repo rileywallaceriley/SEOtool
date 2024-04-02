@@ -4,7 +4,6 @@ requests
 openai
 nltk
 pandas
-pytrends
 pytrends==4.7.3
 google-auth
 textstat
