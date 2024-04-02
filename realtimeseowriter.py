@@ -1,62 +1,86 @@
 import streamlit as st
-import nltk
+from textstat import textstat
 from bs4 import BeautifulSoup
-from textstat.textstat import textstat
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('stopwords')
+import re
 
-def calculate_keyword_density(text, keyword):
-    """Calculate keyword density in the given text."""
-    words = word_tokenize(text.lower())
-    keyword_count = sum(word == keyword.lower() for word in words)
-    total_words = len(words)
-    return (keyword_count / total_words) * 100 if total_words > 0 else 0
+# Initialize Streamlit app
+st.title("Enhanced SEO Optimization Tool for HTML Content")
 
-def analyze_text(content, primary_keyword):
-    """Analyzes the text for basic insights including keyword density."""
-    tokens = word_tokenize(content)
-    tagged_tokens = nltk.pos_tag(tokens)
-    
-    # Basic Part-of-Speech counts
-    pos_counts = {
-        "Nouns": sum(1 for word, pos in tagged_tokens if pos.startswith('NN')),
-        "Verbs": sum(1 for word, pos in tagged_tokens if pos.startswith('VB')),
-        "Adjectives": sum(1 for word, pos in tagged_tokens if pos.startswith('JJ')),
-    }
-    
-    # Readability and keyword density
-    readability_score = textstat.flesch_reading_ease(content)
-    keyword_density = calculate_keyword_density(content, primary_keyword)
-    
-    return {
-        "pos_counts": pos_counts,
-        "readability_score": readability_score,
-        "keyword_density": keyword_density,
-    }
-
+# Function definitions
 def extract_text_from_html(html_content):
-    """Extracts clean text from HTML content."""
     soup = BeautifulSoup(html_content, 'html.parser')
-    text = soup.get_text(separator=' ', strip=True)
-    return text
+    return soup.get_text(separator=' ', strip=True)
 
-# Streamlit UI for SEO Analysis Tool
-st.title("SEO Analysis Tool Using NLTK")
+def keyword_density_improved(html_content, keyword):
+    text = extract_text_from_html(html_content).lower()
+    keyword_matches = re.findall(r'\b' + re.escape(keyword.lower()) + r'\b', text)
+    words = text.split()
+    return round((len(keyword_matches) / len(words)) * 100, 2) if words else 0
 
-# User inputs for HTML content and primary keyword
-html_content = st.text_area("Paste your HTML content here:", height=200)
-primary_keyword = st.text_input("Primary Keyword")
-if st.button("Analyze"):
-    if html_content and primary_keyword:
-        text_content = extract_text_from_html(html_content)
-        analysis_results = analyze_text(text_content, primary_keyword)
-        
-        # Display the analysis results
-        st.write("Readability Score:", analysis_results["readability_score"])
-        st.write("Keyword Density (%):", analysis_results["keyword_density"])
-        st.write("Part-of-Speech Counts:", analysis_results["pos_counts"])
+def count_html_headings(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return {f'h{i}': len(soup.find_all(f'h{i}')) for i in range(1, 4)}
+
+def analyze_links_and_images(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    links = soup.find_all('a')
+    internal_links = [link for link in links if 'http' not in link.get('href', '')]
+    external_links = [link for link in links if 'http' in link.get('href', '')]
+    images = soup.find_all('img')
+    images_with_alt = [img for img in images if img.has_attr('alt') and img['alt'].strip()]
+    
+    return len(links), len(internal_links), len(external_links), len(images), len(images_with_alt)
+
+def provide_guidance(readability_score, keyword_density, headings_count, links, internal_links, external_links, images, images_with_alt):
+    guidance = []
+    # Existing guidance...
+    # Add new guidance for links and images
+    if external_links > 0:
+        guidance.append("✅ Good job including external links.")
     else:
-        st.error("Please input both HTML content and a primary keyword to analyze.")
+        guidance.append("❌ Consider adding external links to reputable sources.")
+        
+    if internal_links > 0:
+        guidance.append("✅ Proper use of internal links.")
+    else:
+        guidance.append("❌ Add more internal links to improve site navigation and SEO.")
+        
+    if images_with_alt < images:
+        missing_alt = images - images_with_alt
+        guidance.append(f"❌ {missing_alt} images are missing 'alt' attributes. Add 'alt' text to improve accessibility and SEO.")
+    else:
+        guidance.append("✅ All images have 'alt' attributes. Great for SEO and accessibility.")
+    
+    return "\n".join(guidance)
+
+# User Inputs
+content_type = st.radio("Content Type", ["Article/Blog", "Web Copy"], key='content_type')
+keywords = st.text_input("Primary Keyword", key='keywords')
+html_content = st.text_area("Paste your HTML content here", height=300, key='html_content')
+
+# Analyze button
+if st.button("Analyze HTML Content"):
+    if html_content and keywords:
+        readability_score = textstat.flesch_reading_ease(extract_text_from_html(html_content))
+        kd = keyword_density_improved(html_content, keywords)
+        headings_count = count_html_headings(html_content)
+        links, internal_links, external_links, images, images_with_alt = analyze_links_and_images(html_content)
+        
+        # Display analysis results
+        st.header("SEO Analysis Results")
+        st.metric("Readability Score", readability_score)
+        st.metric("Keyword Density", f"{kd}%")
+        st.metric("Links (Total/Internal/External)", f"{links}/{internal_links}/{external_links}")
+        st.metric("Images (Total/With Alt Tags)", f"{images}/{images_with_alt}")
+        
+        # Display guidance based on the analysis
+        guidance_text = provide_guidance(readability_score, kd, headings_count, links, internal_links, external_links, images, images_with_alt)
+        st.subheader("Improvement Suggestions")
+        st.markdown(guidance_text)
+    else:
+        st.error("Please ensure both primary keyword and HTML content are provided.")
+
+# Final notes and suggestions
+st.markdown("""
+**Note:** This tool now provides a broader SEO analysis, including readability, keyword density, link usage, and image alt attributes. Consider adding more features like schema markup analysis, social media tags inspection, and page speed insights for a comprehensive SEO audit tool.
+""")
