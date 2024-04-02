@@ -9,3 +9,4 @@ pytrends==4.7.3
 google-auth
 textstat
 lxml
+spacy
