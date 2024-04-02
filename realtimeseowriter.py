@@ -1,81 +1,74 @@
 import streamlit as st
 from textstat import textstat
 from bs4 import BeautifulSoup
+import spacy
 import re
 
-# Initialize Streamlit app
-st.title("SEO Optimization Tool for HTML Content")
+# Load spaCy English model
+nlp = spacy.load("en_core_web_sm")
 
-# Function to extract text from HTML, useful for various analyses
-def extract_text_from_html(html_content):
+def extract_text_and_elements_from_html(html_content):
+    """Extract text and HTML elements using BeautifulSoup."""
     soup = BeautifulSoup(html_content, 'html.parser')
     text = soup.get_text(separator=' ', strip=True)
-    return text
+    images = soup.find_all('img')
+    links = soup.find_all('a')
+    return text, images, links
 
-# Improved keyword density calculation
-def keyword_density_improved(html_content, keyword):
-    text = extract_text_from_html(html_content).lower()
-    keyword_matches = re.findall(r'\b' + re.escape(keyword.lower()) + r'\b', text)
+def analyze_keyword_density(text, keyword):
+    """Calculate keyword density within text."""
     words = text.split()
-    density = (len(keyword_matches) / len(words)) * 100 if words else 0
-    return round(density, 2)
+    matches = sum(1 for word in words if word.lower() == keyword.lower())
+    return round((matches / len(words)) * 100, 2) if words else 0
 
-# Count HTML heading tags
-def count_html_headings(html_content):
-    soup = BeautifulSoup(html_content, 'html.parser')
-    headings_count = {f'h{i}': len(soup.find_all(f'h{i}')) for i in range(1, 4)}
-    return headings_count
+def find_sentences_for_improvement(text):
+    """Identify complex and passive voice sentences using spaCy."""
+    doc = nlp(text)
+    complex_sentences = [sent.text for sent in doc.sents if len(sent) > 20][:3]
+    passive_sentences = [sent.text for sent in doc.sents if any(tok.dep_ == "auxpass" for tok in sent)][:3]
+    return complex_sentences, passive_sentences
 
-# Provide guidance based on analysis results
-def provide_guidance(readability_score, keyword_density, headings_count):
-    guidance = []
-    if readability_score >= 60:
-        guidance.append("✅ Readability is good. The text is easy to read.")
-    else:
-        guidance.append("❌ Readability could be improved. Consider simplifying the text.")
+def provide_seo_suggestions(complex_sentences, passive_sentences, images, links):
+    """Generate SEO suggestions based on content analysis."""
+    suggestions = []
+    if complex_sentences:
+        suggestions.append("Consider simplifying complex sentences for better readability.")
+    if passive_sentences:
+        suggestions.append("Try to use active voice instead of passive for clarity.")
+    if not any(img.get('alt') for img in images):
+        suggestions.append("Add 'alt' text to all images to improve SEO and accessibility.")
+    if not all('http' in link.get('href', '') for link in links):
+        suggestions.append("Verify all external links start with 'http'.")
+    return suggestions if suggestions else ["Content looks good from an SEO perspective!"]
 
-    if 1 <= keyword_density <= 2:
-        guidance.append("✅ Keyword density is optimal.")
-    else:
-        guidance.append("❌ Keyword density could be improved. Aim for 1-2% for best SEO performance.")
+# Streamlit UI setup
+st.title("Comprehensive SEO Analysis Tool")
 
-    if headings_count['h1'] == 1:
-        guidance.append("✅ Good use of H1 tag.")
-    else:
-        guidance.append("❌ Ensure there is exactly one H1 tag for the title.")
+# User inputs
+html_content = st.text_area("Paste your HTML content here", height=300)
+primary_keyword = st.text_input("Primary Keyword")
+analyze_button = st.button("Analyze Content")
 
-    # Add more specific guidance based on H2, H3 tags
-    return "\n".join(guidance)
+if analyze_button and html_content and primary_keyword:
+    # Analysis
+    text, images, links = extract_text_and_elements_from_html(html_content)
+    readability_score = textstat.flesch_reading_ease(text)
+    keyword_density = analyze_keyword_density(text, primary_keyword)
+    complex_sentences, passive_sentences = find_sentences_for_improvement(text)
+    seo_suggestions = provide_seo_suggestions(complex_sentences, passive_sentences, images, links)
+    
+    # Displaying results
+    st.metric("Readability Score", readability_score)
+    st.metric("Keyword Density", f"{keyword_density}%")
+    st.subheader("Complex Sentences (Examples):")
+    for sentence in complex_sentences:
+        st.markdown(f"- *{sentence}*")
+    st.subheader("Passive Voice Sentences (Examples):")
+    for sentence in passive_sentences:
+        st.markdown(f"- *{sentence}*")
+    st.subheader("SEO Suggestions:")
+    for suggestion in seo_suggestions:
+        st.markdown(f"- {suggestion}")
 
-# User Inputs
-content_type = st.radio("Content Type", ["Article/Blog", "Web Copy"], key='content_type')
-keywords = st.text_input("Primary Keyword", key='keywords')
-html_content = st.text_area("Paste your HTML content here", height=300, key='html_content')
-
-# Analyze button
-if st.button("Analyze HTML Content"):
-    if html_content and keywords:
-        # Perform the analysis
-        readability_score = textstat.flesch_reading_ease(extract_text_from_html(html_content))
-        kd = keyword_density_improved(html_content, keywords)
-        headings_count = count_html_headings(html_content)
-        
-        # Display the analysis results
-        st.header("SEO Analysis Results")
-        st.metric(label="Readability Score", value=f"{readability_score}")
-        st.metric(label="Keyword Density", value=f"{kd}%")
-        for tag, count in headings_count.items():
-            st.metric(label=f"{tag.upper()} Tags", value=f"{count}")
-        
-        # Display guidance based on the analysis
-        guidance_text = provide_guidance(readability_score, kd, headings_count)
-        st.subheader("Improvement Suggestions")
-        st.markdown(guidance_text)
-    else:
-        st.error("Please ensure both primary keyword and HTML content are provided.")
-
-# Final notes
-st.markdown("""
-**Note:** This tool provides initial SEO analysis focused on readability, keyword density, and use of headings. 
-For comprehensive optimization, consider additional factors such as meta tags, alt text for images, and internal/external linking strategies.
-""")
+else:
+    st.error("Please ensure both primary keyword and HTML content are provided.")
