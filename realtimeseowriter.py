@@ -1,66 +1,51 @@
 import streamlit as st
-import textstat
-import nltk
+from textstat import textstat
+from bs4 import BeautifulSoup
 
-# Ensure NLTK resources are downloaded (needed if you expand the script to use NLTK for further analysis)
-nltk.download('punkt')
+# Updated functions to handle HTML content
+def extract_text_from_html(html_content):
+    """Extracts and returns all text from the HTML content."""
+    soup = BeautifulSoup(html_content, 'lxml')  # 'html.parser' as an alternative
+    text = soup.get_text(separator=' ', strip=True)
+    return text
 
-# SEO Analysis Functions
-def calculate_flesch_reading_ease(text):
-    """Calculate the Flesch Reading Ease score for the input text."""
-    return textstat.flesch_reading_ease(text)
+def count_html_headings(html_content):
+    """Counts HTML heading tags (H1, H2, H3) in the provided HTML content."""
+    soup = BeautifulSoup(html_content, 'lxml')
+    headings_count = {f'h{i}': len(soup.find_all(f'h{i}')) for i in range(1, 4)}
+    return headings_count
 
-def keyword_density(text, keyword):
-    """Calculate the keyword density percentage for the input text."""
+def keyword_density_in_html(html_content, keyword):
+    """Calculate the keyword density within HTML content."""
+    text = extract_text_from_html(html_content)
     words = text.lower().split()
     keyword_count = sum(1 for word in words if keyword.lower() == word)
-    density = (keyword_count / len(words)) * 100
+    density = (keyword_count / len(words)) * 100 if words else 0
     return round(density, 2)
 
-def headings_analysis(text):
-    """Simple markdown heading analysis for SEO."""
-    h1_count = text.count('# ')
-    h2_count = text.count('## ')
-    h3_count = text.count('### ')
-    return h1_count, h2_count, h3_count
+# Streamlit UI
+st.title("SEO Optimization Tool - HTML Content Analysis")
 
-# Streamlit App UI
-st.title("SEO Optimization Tool")
-
-# User Inputs
 content_type = st.radio("Content Type", ["Article/Blog", "Web Copy"], key='content_type')
 keywords = st.text_input("Primary Keyword", key='keywords')
+html_content = st.text_area("Paste your HTML content here", height=300, key='html_content')
 
-# Content Input
-with st.form("content_form"):
-    main_copy = st.text_area("Main Content", key='main_copy', height=300)
-    analyze_button = st.form_submit_button("Analyze")
-
-# Analysis and Results Display
-if analyze_button and main_copy:
-    readability_score = calculate_flesch_reading_ease(main_copy)
-    kd = keyword_density(main_copy, keywords)
-    h1, h2, h3 = headings_analysis(main_copy)
-    
-    st.header("SEO Analysis Results")
-    col1, col2, col3 = st.columns(3)
-    with col1:
+if st.button("Analyze HTML Content"):
+    if html_content:
+        # Perform the analysis
+        readability_score = textstat.flesch_reading_ease(extract_text_from_html(html_content))
+        kd = keyword_density_in_html(html_content, keywords)
+        headings_count = count_html_headings(html_content)
+        
+        # Display the analysis results
+        st.header("SEO Analysis Results")
         st.metric(label="Readability Score", value=f"{readability_score}")
-    with col2:
         st.metric(label="Keyword Density", value=f"{kd}%")
-    with col3:
-        st.metric(label="H1 Tags", value=f"{h1}")
-    
-    st.subheader("Headings Usage")
-    st.markdown(f"""
-    - **H2 Tags**: {h2}
-    - **H3 Tags**: {h3}
-    """)
-    
-    # Tips for Improvement
-    with st.expander("Tips for Improvement"):
-        st.markdown("""
-        - **Readability Score**: Aim for a score above 60 for general audiences. The higher the score, the easier it is to read.
-        - **Keyword Density**: Keep your keyword density between 1% and 2% to avoid keyword stuffing. Consider variations and synonyms for better results.
-        - **Headings**: Use headings to structure your content logically. An H1 tag for the title, followed by H2 for main sections, and H3 for subsections, enhances readability and SEO.
-        """)
+        
+        st.subheader("Headings Usage")
+        for tag, count in headings_count.items():
+            st.metric(label=f"{tag.upper()} Tags", value=f"{count}")
+
+        # Add more analyses as needed
+    else:
+        st.error("Please paste HTML content to analyze.")
