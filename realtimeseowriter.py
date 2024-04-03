@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlparse
 
 # Initialize Streamlit app
-st.title("SEO Optimization Tool with Enhanced Link Analysis")
+st.title("RRSEO Writing Analyzer V1.01")
 
 def extract_text_from_html(html_content):
     """Extract text from HTML using BeautifulSoup."""
