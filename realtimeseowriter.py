@@ -82,5 +82,4 @@ if st.button("Analyze HTML Content"):
 
 # Final notes and suggestions
 st.markdown("""
-**Note:** This tool now provides a broader SEO analysis, including readability, keyword density, link usage, and image alt attributes. Consider adding more features like schema markup analysis, social media tags inspection, and page speed insights for a comprehensive SEO audit tool.
 """)
