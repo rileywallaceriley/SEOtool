@@ -2,6 +2,7 @@ import streamlit as st
 from textstat import textstat
 from bs4 import BeautifulSoup
 import re
+from urllib.parse import urlparse
 
 # Initialize Streamlit app
 st.title("Enhanced SEO Optimization Tool for HTML Content")
@@ -21,11 +22,14 @@ def count_html_headings(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     return {f'h{i}': len(soup.find_all(f'h{i}')) for i in range(1, 4)}
 
-def analyze_links_and_images(html_content):
+def analyze_links_and_images(html_content, base_url):
     soup = BeautifulSoup(html_content, 'html.parser')
+    parsed_base_url = urlparse(base_url)
+    base_domain = parsed_base_url.netloc
+    
     links = soup.find_all('a')
-    internal_links = [link for link in links if 'http' not in link.get('href', '')]
-    external_links = [link for link in links if 'http' in link.get('href', '')]
+    internal_links = [link for link in links if urlparse(link.get('href', '')).netloc == base_domain]
+    external_links = [link for link in links if urlparse(link.get('href', '')).netloc != base_domain and link.get('href', '').startswith('http')]
     images = soup.find_all('img')
     images_with_alt = [img for img in images if img.has_attr('alt') and img['alt'].strip()]
     
@@ -34,7 +38,6 @@ def analyze_links_and_images(html_content):
 def provide_guidance(readability_score, keyword_density, headings_count, links, internal_links, external_links, images, images_with_alt):
     guidance = []
     # Existing guidance...
-    # Add new guidance for links and images
     if external_links > 0:
         guidance.append("✅ Good job including external links.")
     else:
@@ -55,16 +58,17 @@ def provide_guidance(readability_score, keyword_density, headings_count, links, 
 
 # User Inputs
 content_type = st.radio("Content Type", ["Article/Blog", "Web Copy"], key='content_type')
+base_url = st.text_input("Website Base URL", key='base_url')
 keywords = st.text_input("Primary Keyword", key='keywords')
 html_content = st.text_area("Paste your HTML content here", height=300, key='html_content')
 
 # Analyze button
 if st.button("Analyze HTML Content"):
-    if html_content and keywords:
+    if html_content and keywords and base_url:
         readability_score = textstat.flesch_reading_ease(extract_text_from_html(html_content))
         kd = keyword_density_improved(html_content, keywords)
         headings_count = count_html_headings(html_content)
-        links, internal_links, external_links, images, images_with_alt = analyze_links_and_images(html_content)
+        links, internal_links, external_links, images, images_with_alt = analyze_links_and_images(html_content, base_url)
         
         # Display analysis results
         st.header("SEO Analysis Results")
@@ -78,8 +82,4 @@ if st.button("Analyze HTML Content"):
         st.subheader("Improvement Suggestions")
         st.markdown(guidance_text)
     else:
-        st.error("Please ensure both primary keyword and HTML content are provided.")
-
-# Final notes and suggestions
-st.markdown("""
-""")
+        st.error("Please ensure the website base URL, primary keyword, and HTML content are provided.")
