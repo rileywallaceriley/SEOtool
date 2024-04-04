@@ -4,8 +4,12 @@ from bs4 import BeautifulSoup
 import re
 from urllib.parse import urlparse
 
-# Initialize Streamlit app
+# Initialize Streamlit app with a title
 st.title("RRSEO Writing Analyzer V1.01")
+
+# Display the header image
+image_url = "https://i.ibb.co/Rz7nvfw/FB91-A463-BC23-4250-B0-B3-88-BE99514-FCF.jpg"
+st.image(image_url)
 
 def extract_text_from_html(html_content):
     """Extract text from HTML using BeautifulSoup."""
@@ -31,17 +35,8 @@ def analyze_links_and_images(html_content, base_url):
     links = soup.find_all('a')
     images = soup.find_all('img')
     
-    internal_links = []
-    external_links = []
-    for link in links:
-        href = link.get('href', '')
-        # Check if the link is relative (implicitly internal)
-        # or if the domain matches the base domain (explicitly internal)
-        if href.startswith('/') or urlparse(href).netloc == base_domain:
-            internal_links.append(href)
-        elif href.startswith('http'):
-            external_links.append(href)
-    
+    internal_links = [link for link in links if urlparse(link.get('href', '')).netloc == base_domain or link.get('href', '').startswith('/')]
+    external_links = [link for link in links if urlparse(link.get('href', '')).netloc != base_domain and link.get('href', '').startswith('http')]
     images_with_alt = [img for img in images if img.has_attr('alt') and img['alt'].strip()]
     
     return len(links), len(internal_links), len(external_links), len(images), len(images_with_alt)
@@ -53,15 +48,18 @@ def provide_guidance(readability_score, keyword_density, headings_count, links, 
         guidance.append("✅ Good job including external links.")
     else:
         guidance.append("❌ Consider adding external links to reputable sources.")
+        
     if internal_links > 0:
         guidance.append("✅ Proper use of internal links.")
     else:
         guidance.append("❌ Add more internal links to improve site navigation and SEO.")
+        
     if images_with_alt < images:
         missing_alt = images - images_with_alt
         guidance.append(f"❌ {missing_alt} images are missing 'alt' attributes. Add 'alt' text to improve accessibility and SEO.")
     else:
         guidance.append("✅ All images have 'alt' attributes. Great for SEO and accessibility.")
+    
     return "\n".join(guidance)
 
 # User Inputs
