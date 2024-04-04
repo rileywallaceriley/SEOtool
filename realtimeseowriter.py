@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 st.title("RRSEO Writing Analyzer V1.01")
 
 # Display the header image
-image_url = "https://i.ibb.co/Rz7nvfw/FB91-A463-BC23-4250-B0-B3-88-BE99514-FCF.jpg"
+image_url = "https://i.ibb.co/yN4TFBg/BB868-C5-F-9-D11-4007-B259-43-AEC5-A44-D2-B.webp"
 st.image(image_url)
 
 def extract_text_from_html(html_content):
