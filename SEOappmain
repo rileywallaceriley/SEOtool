@@ -28,10 +28,10 @@ def get_google_search_results(query, site_url):
 def scrape_content(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
-    content = soup.find('main').text
+    content = soup.find('main').text if soup.find('main') else ''
     return content
 
-def get_recommendations(content, ranking, engine='text-davinci-004'):
+def get_recommendations(content, ranking, engine='text-davinci-003'):  # Use available engine
     prompt = f"The website content is:\n{content}\n\n"
     if ranking is not None and ranking <= 50:
         prompt += f"The site is ranked {ranking} for the given keyword. Provide both on-page and off-page SEO recommendations to improve its ranking."
@@ -55,14 +55,17 @@ if st.button('Analyze'):
     if url and keyword:
         ranking = get_google_search_results(keyword, url)
         content = scrape_content(url)
-        recommendations = get_recommendations(content, ranking, engine='text-davinci-004')
-        
-        if ranking is not None and ranking <= 50:
-            st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
-        elif ranking is None:
-            st.write('Your site was not found in the top 50 results.')
-        
-        st.write('Content Scraped:', content)
-        st.write('SEO Recommendations:', recommendations)
+        if content:
+            recommendations = get_recommendations(content, ranking, engine='text-davinci-003')
+            
+            if ranking is not None and ranking <= 50:
+                st.write(f'Your site is ranked {ranking} for the keyword "{keyword}".')
+            elif ranking is None:
+                st.write('Your site was not found in the top 50 results.')
+            
+            st.write('Content Scraped:', content)
+            st.write('SEO Recommendations:', recommendations)
+        else:
+            st.warning('Failed to scrape content from the provided URL. Please check the URL and try again.')
     else:
         st.warning('Please enter both a URL and a keyword.')
