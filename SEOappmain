@@ -31,7 +31,7 @@ def scrape_content(url):
     content = soup.find('main').text if soup.find('main') else ''
     return content
 
-def get_recommendations(content, ranking, engine='text-davinci-003'):  # Use available engine
+def get_recommendations(content, ranking, engine='text-davinci-003'):
     prompt = f"The website content is:\n{content}\n\n"
     if ranking is not None and ranking <= 50:
         prompt += f"The site is ranked {ranking} for the given keyword. Provide both on-page and off-page SEO recommendations to improve its ranking."
