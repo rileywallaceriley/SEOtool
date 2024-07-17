@@ -2,7 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import streamlit as st
-from openai import OpenAI
+import openai
 
 # Display the logo and set up the Streamlit UI
 logo_url = 'https://i.ibb.co/VvYtGFg/REPU-11.png'
@@ -19,8 +19,8 @@ if not openai_api_key:
     st.error("The OPENAI_API_KEY environment variable is not set.")
     st.stop()
 
-# Create an OpenAI client instance
-openai_client = OpenAI(api_key=openai_api_key)
+# Set OpenAI API key
+openai.api_key = openai_api_key
 
 def get_google_search_results(query, site_url, location):
     url = "https://www.googleapis.com/customsearch/v1"
@@ -59,7 +59,7 @@ def scrape_content(url):
 
     return content, headings, meta_description_content, image_alts
 
-def get_recommendations(content, ranking, url, main_keyword, headings, meta_description, image_alts, engine='gpt-4', purpose='general'):
+def get_recommendations(content, ranking, url, main_keyword, headings, meta_description, image_alts, engine='gpt-3.5-turbo', purpose='general'):
     content_preview = (content[:500] + '...') if len(content) > 500 else content
 
     alt_tag_summary = "Alt tags are used effectively for some images, enhancing SEO and accessibility. However, there are opportunities to improve alt text to be more descriptive and keyword-rich where appropriate."
@@ -80,14 +80,14 @@ def get_recommendations(content, ranking, url, main_keyword, headings, meta_desc
              "Keyword opportunities based on the analysis. [in this section provide a brief intro, and break down the suggestion, providing some context and logixc as to why you're suggesting it]"
 
     try:
-        response = openai_client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model=engine,
             messages=[
                 {"role": "system", "content": "You are an AI trained in advanced SEO and content optimization."},
                 {"role": "user", "content": prompt}
             ]
         )
-        return response.choices[0].message.content.strip()
+        return response.choices[0].message['content'].strip()
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
